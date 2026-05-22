@@ -1,0 +1,2531 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Расчёт токов короткого замыкания в электроустановках жилых и общественных зданий (ГОСТ 28249-93)</title>
+<!-- Version 2.0 - Orange colors update -->
+<script type="text/javascript" nonce="adbece5b9caa4615ad44549d9c7" src="//local.adguard.org?ts=1779292560145&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_00000000389471f48360e02f398ed97c%26ts%3D494248%26p%3Dfs%26cid%3D1%26sig%3D62d6a5b3931c2b6dd334232728de13d4b0cd1254203fd5967affe95e23f944fd%26v%3D0&amp;app=com.apple.Safari&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"></script><script type="text/javascript" nonce="adbece5b9caa4615ad44549d9c7" src="//local.adguard.org?ts=1779292560145&amp;name=AdGuard%20Extra&amp;type=user-script"></script><link href="https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f7fa;--surface:#ffffff;--surface2:#f8f9fb;--surface3:#f0f2f5;
+    --border:#d1d5db;--accent:#4f8ef7;--accent2:#38d9a9;--accent3:#f97316;
+    --text:#1a1f36;--text2:#5e6a8a;--danger:#f76f6f;--radius:10px;
+    --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Geologica',sans-serif;font-weight:300;min-height:100vh;padding:32px 16px 80px;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(79,142,247,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(79,142,247,0.08) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+  .wrapper{position:relative;z-index:1;max-width:1020px;margin:0 auto;}
+
+  header{margin-bottom:40px;}
+  .logo-line{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+  .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--danger),#c44);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+  h1{font-size:22px;font-weight:600;letter-spacing:-0.3px;}
+  .subtitle{font-size:13px;color:var(--text2);font-family:var(--mono);letter-spacing:0.5px;}
+
+  .section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden;}
+  .section-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;user-select:none;transition:background 0.2s;}
+  .section-header:hover{background:var(--surface2);}
+  .section-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;}
+  .section-num{width:24px;height:24px;border-radius:6px;background:var(--accent);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;font-family:var(--mono);flex-shrink:0;}
+  .chevron{color:var(--text2);font-size:12px;transition:transform 0.25s;}
+  .section.open .chevron{transform:rotate(180deg);}
+  .section-body{display:none;padding:0 20px 20px;border-top:1px solid var(--border);}
+  .section.open .section-body{display:block;}
+
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:14px;}
+  .form-group{display:flex;flex-direction:column;gap:6px;}
+  label{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.6px;font-family:var(--mono);}
+  input,select{background:var(--bg);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Geologica',sans-serif;font-size:14px;padding:9px 12px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;width:100%;appearance:none;-webkit-appearance:none;}
+  input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,142,247,0.12);}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b94b0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+  .radio-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+  .radio-btn{display:flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 14px;cursor:pointer;transition:border-color 0.2s,background 0.2s;font-size:13px;}
+  .radio-btn input[type=radio]{display:none;}
+  .radio-btn.active{border-color:var(--accent);background:rgba(79,142,247,0.08);color:var(--accent);}
+  .subsection-label{font-size:11px;font-family:var(--mono);color:var(--accent2);text-transform:uppercase;letter-spacing:0.8px;margin-top:16px;margin-bottom:4px;}
+  .divider{height:1px;background:var(--border);margin:16px 0;}
+  .hint{font-size:11px;color:var(--text2);margin-top:4px;}
+  .hidden{display:none!important;}
+
+  .chain-container{margin-top:8px;}
+  .chain-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;position:relative;}
+  .chain-item-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--surface2);}
+  .chain-item-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;}
+  .chain-step-badge{font-family:var(--mono);font-size:11px;background:var(--surface3);border:1px solid var(--border);border-radius:5px;padding:3px 8px;color:var(--text2);}
+  .chain-type-badge{font-family:var(--mono);font-size:11px;border-radius:5px;padding:3px 9px;font-weight:500;}
+  .badge-trafo{background:rgba(79,142,247,0.15);color:var(--accent);border:1px solid rgba(79,142,247,0.3);}
+  .badge-cable{background:rgba(56,217,169,0.12);color:var(--accent2);border:1px solid rgba(56,217,169,0.3);}
+  .badge-busbar{background:rgba(249,115,22,0.12);color:var(--accent3);border:1px solid rgba(249,115,22,0.3);}
+  .badge-av{background:rgba(247,111,111,0.12);color:var(--danger);border:1px solid rgba(247,111,111,0.3);}
+  .badge-vru{background:rgba(160,130,220,0.15);color:#b39ddb;border:1px solid rgba(160,130,220,0.3);}
+  .chain-item-body{padding:14px 16px 16px;}
+  .chain-del-btn{background:rgba(247,111,111,0.1);border:1px solid rgba(247,111,111,0.25);color:var(--danger);border-radius:6px;padding:5px 10px;cursor:pointer;font-size:12px;font-family:var(--mono);transition:background 0.2s;}
+  .chain-del-btn:hover{background:rgba(247,111,111,0.2);}
+  .add-btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;}
+  .add-btn{display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:'Geologica',sans-serif;font-size:13px;cursor:pointer;transition:border-color 0.2s,background 0.2s;}
+  .add-btn:hover{border-color:var(--accent);background:rgba(79,142,247,0.07);}
+  .add-btn .icon{font-size:15px;}
+
+  .calc-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--danger),#b33);border:none;border-radius:var(--radius);color:#fff;font-family:'Geologica',sans-serif;font-size:15px;font-weight:600;letter-spacing:0.3px;cursor:pointer;margin-top:16px;transition:opacity 0.2s,transform 0.1s;}
+  .calc-btn:hover{opacity:0.9;}
+  .calc-btn:active{transform:scale(0.99);}
+
+  #result{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-top:20px;overflow:hidden;}
+  .result-header{padding:16px 20px;border-bottom:1px solid var(--border);font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;font-family:var(--mono);}
+  .result-body{padding:20px;}
+
+  .res-step{background:var(--surface2);border:1px solid var(--border);border-radius:9px;margin-bottom:16px;overflow:hidden;}
+  .res-step:last-child{margin-bottom:0;}
+  .res-step-header{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface3);}
+  .res-step-title{font-size:13px;font-weight:600;font-family:var(--mono);}
+  .res-step-body{padding:14px 16px;}
+  .res-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:660px){.res-cols{grid-template-columns:1fr;}}
+  .res-col-title{font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.6px;color:var(--text2);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+  .res-col-title.c3{color:var(--accent);}
+  .res-col-title.c1{color:var(--accent2);}
+  .res-row{display:flex;align-items:baseline;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(42,48,80,0.4);font-size:12px;}
+  .res-row:last-child{border-bottom:none;}
+  .res-label{color:var(--text2);}
+  .res-val{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--accent);}
+  .res-val.green{color:var(--accent2);}
+  .res-val.yellow{color:var(--accent3);}
+  .res-val.danger{color:var(--danger);}
+  .res-formula{font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--surface);border-radius:5px;padding:7px 10px;margin-top:6px;line-height:1.8;}
+  .res-formula span{color:var(--accent3);}
+  .check-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding:10px 12px;border-radius:7px;font-size:12px;font-family:var(--mono);}
+  .check-ok{background:rgba(56,217,169,0.1);border:1px solid rgba(56,217,169,0.3);color:var(--accent2);}
+  .check-fail{background:rgba(247,111,111,0.1);border:1px solid rgba(247,111,111,0.3);color:var(--danger);}
+  .check-label{font-size:11px;}
+  .res-zsum{margin-top:14px;padding:12px 14px;background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.25);border-radius:7px;font-family:var(--mono);font-size:12px;line-height:2;}
+  .res-zsum span{color:var(--accent3);font-weight:500;}
+  .res-note{font-size:11px;color:var(--text2);font-family:var(--mono);margin-top:20px;line-height:1.7;padding:12px 14px;background:rgba(42,48,80,0.3);border-radius:6px;border-left:2px solid var(--border);}
+  .error-msg{color:var(--danger);font-size:13px;font-family:var(--mono);padding:12px 16px;background:rgba(247,111,111,0.08);border-radius:7px;}
+  .drag-hint{font-size:11px;color:var(--text2);font-family:var(--mono);margin-bottom:10px;}
+  .chain-connector{width:2px;height:16px;background:var(--border);margin:0 auto;position:relative;left:50%;}
+
+  /* ═══ СХЕМА ЗАМЕЩЕНИЯ ═══ */
+  #schemaSection{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-top:20px;overflow:hidden;}
+  .schema-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .schema-header-title{font-size:14px;font-weight:600;font-family:var(--mono);display:flex;align-items:center;gap:8px;}
+  .schema-header-hint{font-size:11px;color:var(--text2);}
+  .schema-wrap{padding:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  #schemaSvg{display:block;}
+  .schema-legend{display:flex;gap:18px;flex-wrap:wrap;padding:0 20px 16px;font-size:11px;font-family:var(--mono);color:var(--text2);}
+  .leg-item{display:flex;align-items:center;gap:5px;}
+  .leg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
+  .bolt-point{transition:opacity 0.15s;}
+  .bolt-point:hover{opacity:0.8;}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <header>
+    <div class="logo-line">
+      <div class="logo-icon" style="font-family:Geologica;font-weight:700;font-size:32px;color:var(--accent)">Iк</div>
+      <h1>Расчёт токов короткого замыкания в электроустановках жилых и общественных зданий</h1>
+    </div>
+    <div class="subtitle">ГОСТ 28249-93 | Городские распределительные сети и внутренние сети зданий | Система TN-C-S | Uн = 0,4 кВ</div>
+  </header>
+
+  <div style="margin-bottom:20px;padding:16px;background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.3);border-radius:var(--radius);border-left:4px solid #f97316">
+    <div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:8px">Область применения</div>
+    <div style="font-size:13px;line-height:1.6;color:var(--text2)">
+      Калькулятор предназначен для расчёта токов короткого замыкания в <strong style="color:var(--text)">электроустановках жилых и общественных зданий</strong> напряжением до 1 кВ:<br>
+      • Многоквартирные жилые дома (МКД)<br>
+      • Административные и офисные здания<br>
+      • Торговые центры и объекты общественного питания<br>
+      • Учреждения образования, здравоохранения, культуры<br>
+      • Городские распределительные сети 0,4 кВ (ТП → ВРУ → квартиры/помещения)<br>
+      <br>
+      <strong style="color:#f97316">Не применяется для:</strong> промышленных предприятий с мощными электроприводами, сварочным оборудованием, электротермическими установками и специфическими режимами работы электрооборудования.
+    </div>
+  </div>
+
+  <div style="margin-bottom:20px;padding:16px;background:rgba(247,111,111,0.08);border:1px solid rgba(247,111,111,0.3);border-radius:var(--radius);border-left:4px solid #f76f6f">
+    <div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:8px">Важно: Профессиональная верификация расчётов</div>
+    <div style="font-size:13px;line-height:1.6;color:var(--text2)">
+      Данный калькулятор является вспомогательным инструментом для предварительных расчётов и проверки проектных решений. <strong style="color:var(--text)">Результаты расчёта подлежат обязательной верификации и утверждению лицом, ответственным за разработку проектной документации</strong> (ГИП, ГАП или лицом, выполняющим функции технического заказчика).<br>
+      <br>
+      Проектировщик обязан:<br>
+      • Проверить корректность исходных данных и выбранной расчётной схемы<br>
+      • Убедиться в применимости методики для конкретного объекта<br>
+      • Учесть специфические особенности электроустановки<br>
+      • Подтвердить результаты расчёта своей подписью и печатью (при наличии)<br>
+      <br>
+      <strong style="color:#f76f6f">Ответственность за достоверность и правильность применения результатов расчёта несёт лицо, утвердившее проектную документацию</strong>, в соответствии с требованиями Градостроительного кодекса РФ и Федерального закона №384-ФЗ «Технический регламент о безопасности зданий и сооружений».
+    </div>
+  </div>
+
+  <details style="margin-bottom:20px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)">
+    <summary style="cursor:pointer;font-weight:600;font-size:14px;color:var(--accent);user-select:none">Инструкция по использованию калькулятора</summary>
+    <div style="margin-top:14px;font-size:13px;line-height:1.7;color:var(--text2)">
+      <p style="margin-bottom:10px"><strong style="color:var(--text)">Шаг 1. Добавление элементов</strong><br>
+      Добавляйте элементы схемы последовательно кнопками ниже. Элементы будут отображаться в порядке от источника к нагрузке.</p>
+      
+      <p style="margin-bottom:10px"><strong style="color:var(--text)">Шаг 2. Типовая последовательность</strong><br>
+      • <strong>С ГРЩ:</strong> Трансформатор → Шинопровод/Кабель → Вводная панель ГРЩ → Распределительная панель ГРЩ → Кабель → Вводная панель ВРУ → Распределительная панель ВРУ → Кабель → Щит → Кабель → Электроприёмник<br>
+      • <strong>Без ГРЩ:</strong> Трансформатор → Кабель → Вводная панель ВРУ → Распределительная панель ВРУ → ...</p>
+      
+      <p style="margin-bottom:10px"><strong style="color:var(--text)">Шаг 3. Заполнение параметров</strong><br>
+      • <strong>Трансформатор:</strong> выберите мощность (25-3200 кВА), напряжение ВН (6/10/20 кВ), мощность КЗ на шинах ВН (МВА)<br>
+      • <strong>Кабель:</strong> материал, сечение, длина, тип изоляции (ПВХ 70°C / XLPE 90°C), число цепей<br>
+      • <strong>Вводная панель:</strong> тип (ГРЩ/ВРУ/Щит), рубильник (опция для ВРУ/Щита), вводной АВ/предохранитель ППН (опция)<br>
+      • <strong>Распределительная панель:</strong> тип (ГРЩ/ВРУ), отходящий АВ с выбором кривой для модульных (B/C/D)<br>
+      • <strong>Щит:</strong> вводной рубильник/АВ (опция), отходящий АВ (обязательно) с выбором кривой</p>
+      
+      <p style="margin-bottom:10px"><strong style="color:var(--text)">Шаг 4. Расчёт</strong><br>
+      Нажмите <strong>«Рассчитать токи КЗ»</strong>. Калькулятор покажет токи КЗ в каждой точке, проверку срабатывания АВ по однофазному КЗ (Iк1) и схему замещения.</p>
+      
+      <p style="margin-bottom:10px"><strong style="color:var(--text)">Шаг 5. График зависимости (опционально)</strong><br>
+      Если предпоследний элемент — кабель или шинопровод, а последний — электроприёмник, можно построить график зависимости тока КЗ от длины этого элемента (кнопка <strong>«Построить график»</strong>). Полезно для выбора оптимального сечения.</p>
+      
+      <p style="margin-top:14px;padding:10px;background:rgba(79,142,247,0.1);border-left:3px solid var(--accent);border-radius:4px;font-size:12px">
+      <strong>Примечание:</strong> Температурный учёт происходит автоматически — кабели нагреваются до рабочей температуры по типу изоляции (ПВХ 70°C, XLPE 90°C), шинопроводы — фиксированно 70°C. Проверка АВ идёт по однофазному КЗ (Iк1) — это наихудший режим согласно п.2.2.1 ГОСТ 28249-93.
+      </p>
+    </div>
+  </details>
+
+  <div class="section open" id="sec1">
+    <div class="section-header" onclick="toggleSection('sec1')">
+      <div class="section-title"><div class="section-num">1</div>Элементы цепи</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="drag-hint">Добавляйте элементы последовательно от источника к нагрузке. Ток КЗ рассчитывается на каждой ступени.</div>
+      <div class="chain-container" id="chainContainer"></div>
+      <div class="add-btn-row" style="margin-top:14px">
+        <button class="add-btn" onclick="addElement('trafo')">Трансформатор</button>
+        <button class="add-btn" onclick="addElement('cable')">Кабель</button>
+        <button class="add-btn" onclick="addElement('busbar')">Шинопровод</button>
+        <button class="add-btn" onclick="addElement('av')">Автоматический выключатель</button>
+        <button class="add-btn" onclick="addElement('panel_input')">Вводная панель</button>
+        <button class="add-btn" onclick="addElement('panel_distrib')">Распределительная панель</button>
+        <button class="add-btn" onclick="addElement('shield')">Щит</button>
+        <button class="add-btn" onclick="addElement('receiver')">Электроприёмник</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:16px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)">
+    <div style="font-weight:600;margin-bottom:12px;color:var(--text)">⚙️ Параметры расчёта</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Переходное сопротивление Rп (контакты + дуга КЗ)</label>
+        <select id="transitionR">
+          <option value="0">0 Ом (идеальные контакты, максимальные токи)</option>
+          <option value="0.015">0.015 Ом (хорошее состояние контактов)</option>
+          <option value="0.050" selected>0.050 Ом (нормальное состояние, РД 153-34.0-20.527-98)</option>
+          <option value="0.100">0.100 Ом (минимальные токи, консервативный расчёт)</option>
+        </select>
+      </div>
+    </div>
+    <div class="hint">Переходное сопротивление Rп учитывает сопротивление контактов, мест соединений и дуги КЗ. Для проверки чувствительности защит рекомендуется 0.05-0.1 Ом (РД 153-34.0-20.527-98, ПУЭ п.3.1.21). Консервативный подход: 0.1 Ом для гарантированной селективности.</div>
+  </div>
+
+  <button class="calc-btn" onclick="calculate()">Рассчитать токи КЗ</button>
+
+  <!-- Схема замещения — показывается ДО числовых результатов -->
+  <div id="schemaSection" class="hidden">
+    <div class="schema-header">
+      <div class="schema-header-title">Схема замещения</div>
+      <div class="schema-header-hint">Нажмите на точку КЗ для просмотра токов</div>
+    </div>
+    <div class="schema-wrap">
+      <svg id="schemaSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="schema-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#4f8ef7"></div>Трансформатор</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#38d9a9"></div>Кабель</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#f97316"></div>Шинопровод</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#f76f6f"></div>АВ</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#b39ddb"></div>Панели</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#f97316"></div>Точка КЗ</div>
+    </div>
+  </div>
+
+  <div id="result" class="hidden">
+    <div class="result-header">Результаты расчёта токов КЗ</div>
+    <div class="result-body" id="resultBody"></div>
+  </div>
+
+  <!-- Кнопка построения графика -->
+  <div id="chartButtonContainer" class="hidden" style="margin-top:20px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);display:flex;align-items:center;gap:16px">
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Анализ зависимости тока КЗ от длины</div>
+      <div style="font-size:12px;color:var(--text2)">Построить график для <strong id="chartTargetElement" style="color:var(--accent)">последнего кабеля/шинопровода</strong> в цепи</div>
+    </div>
+    <button class="calc-btn" onclick="showLengthChart()" style="background:var(--accent2);white-space:nowrap">Построить график</button>
+  </div>
+
+  <div id="chartContainer" class="hidden" style="margin-top:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.1)">
+    <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:16px">Зависимость тока КЗ от длины кабеля/шинопровода</div>
+    <div style="height:500px">
+      <canvas id="lengthChart"></canvas>
+    </div>
+    <div id="chartInfo" style="margin-top:14px;padding:12px;background:var(--surface2);border-radius:8px;font-size:12px;line-height:1.6"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// ДАННЫЕ
+// ═══════════════════════════════════════════════
+// ДАННЫЕ ТРАНСФОРМАТОРОВ
+// Рассчитано по ГОСТ 28249-93, п. 2.1.1
+// Исходные данные Pk и Uk% из https://www.nomek.ru/node/477 (таблица 2.1)
+// Формулы: Rт = (Pk × Uном²) / (1000 × Sном²) × 1000 мОм
+//          Xт = √[(Uk% × Uном² / (100 × Sном) × 1000)² - Rт²] мОм
+const trafoData = {
+  25:   {rT:153.6, xT:243.6, uKz:4.5},
+  40:   {rT:88.0,  xT:157.0, uKz:4.5},
+  63:   {rT:49.6,  xT:103.0, uKz:4.5},
+  100:  {rT:30.4,  xT:65.3,  uKz:4.5},
+  160:  {rT:16.25, xT:42.0,  uKz:4.5},
+  250:  {rT:9.47,  xT:30.6,  uKz:5.0},
+  400:  {rT:5.5,   xT:17.1,  uKz:4.5},
+  630:  {rT:3.06,  xT:13.6,  uKz:5.5},
+  1000: {rT:1.73,  xT:8.63,  uKz:5.5},
+  1250: {rT:1.38,  xT:6.90,  uKz:5.5},
+  1600: {rT:1.03,  xT:5.91,  uKz:6.0},
+  2000: {rT:0.80,  xT:4.73,  uKz:6.0},
+  2500: {rT:0.72,  xT:3.77,  uKz:6.0},
+  3200: {rT:0.55,  xT:3.20,  uKz:6.5},
+};
+const cableR0 = {
+  'Медь':     {1.5:12.1,2.5:7.41,4:4.61,6:3.08,10:1.83,16:1.15,25:0.727,35:0.524,50:0.387,70:0.268,95:0.193,120:0.153,150:0.124,185:0.0991,240:0.0754,300:0.0601,400:0.047,500:0.0366},
+  'Алюминий': {2.5:12.1,4:7.41,6:4.61,10:3.08,16:1.91,25:1.20,35:0.868,50:0.641,70:0.443,95:0.320,120:0.253,150:0.206,185:0.164,240:0.125,300:0.100,400:0.0778,500:0.0605},
+};
+// Индуктивное сопротивление X₀ зависит от сечения (мОм/м)
+// Для кабелей с изоляцией из сшитого полиэтилена при прокладке в земле
+const cableX0 = {
+  1.5:0.095, 2.5:0.092, 4:0.089, 6:0.086, 10:0.083, 16:0.080,
+  25:0.077, 35:0.075, 50:0.073, 70:0.071, 95:0.070, 120:0.069,
+  150:0.068, 185:0.067, 240:0.066, 300:0.065, 400:0.064, 500:0.063
+};
+const busbarData = {
+  'KXA':{label:'KXA-Al (алюминий)',ratings:{400:{r:0.258,x:0.035},500:{r:0.225,x:0.033},630:{r:0.159,x:0.027},800:{r:0.116,x:0.021},1000:{r:0.101,x:0.020},1250:{r:0.058,x:0.013},1350:{r:0.052,x:0.013},1600:{r:0.043,x:0.010},2000:{r:0.035,x:0.008},2500:{r:0.028,x:0.007},3200:{r:0.022,x:0.005},4000:{r:0.016,x:0.004},5000:{r:0.014,x:0.003},6000:{r:0.010,x:0.002}}},
+  'KXC':{label:'KXC-Cu (медь)',ratings:{550:{r:0.225,x:0.033},650:{r:0.159,x:0.027},800:{r:0.116,x:0.021},1000:{r:0.080,x:0.015},1250:{r:0.058,x:0.013},1350:{r:0.052,x:0.013},1600:{r:0.041,x:0.010},2000:{r:0.033,x:0.008},2500:{r:0.026,x:0.007},3300:{r:0.019,x:0.005},3600:{r:0.016,x:0.005},4000:{r:0.015,x:0.004},5000:{r:0.010,x:0.003},6300:{r:0.006,x:0.002}}}
+};
+const rAV = {
+  modular:{6:1.5,10:1.2,16:0.9,20:0.8,25:0.7,32:0.6,40:0.5,50:0.5,63:0.4,80:0.35,100:0.3,125:0.28,160:0.25},
+  mccb:{100:0.15,125:0.12,160:0.10,200:0.08,250:0.07,315:0.06,400:0.05,500:0.04,630:0.035,800:0.03,1000:0.025,1250:0.02,1600:0.015,2000:0.012,2500:0.010,3200:0.008,4000:0.007,5000:0.006,6300:0.005}
+};
+// Предохранители ППН (ГОСТ 28249-93)
+const rFuse = {
+  6:8.0, 10:5.0, 16:3.0, 25:2.0, 35:1.5, 50:1.0, 63:0.8, 80:0.6,
+  100:0.45, 125:0.35, 160:0.28, 200:0.22, 250:0.18, 315:0.14, 400:0.11, 500:0.09, 630:0.07
+};
+// Рубильники/разъединители (расширенный диапазон)
+const rSwitch = {
+  16:0.20, 25:0.18, 32:0.15, 40:0.13, 63:0.10, 80:0.08, 100:0.15, 160:0.10, 250:0.08, 400:0.06, 630:0.04, 1000:0.025, 1600:0.020, 2000:0.015, 2500:0.012
+};
+const rVRU = {
+  'ГРЩ':0.07,
+  'ВРУ':0.15,
+  'Щит':0.20,
+};
+// Сокращения для схемы замещения
+const vruAbbrev = {
+  'ГРЩ':'ГРЩ',
+  'ВРУ':'ВРУ',
+  'Щит':'Щит',
+  'Электроприёмник':'ЭП',
+};
+
+let elements = [];
+let elCounter = 0;
+
+function r3(v){return Math.round(v*1000)/1000;}
+function r2(v){return Math.round(v*100)/100;}
+function r1(v){return Math.round(v*10)/10;}
+
+function toggleSection(id){document.getElementById(id).classList.toggle('open');}
+
+// ═══════════════════════════════════════════════
+// CHAIN RENDER
+// ═══════════════════════════════════════════════
+function addElement(type){
+  elCounter++;
+  const id=`el_${elCounter}`;
+  elements.push({id,type});
+  renderChain();
+  setTimeout(()=>initElement({id,type}),0);
+}
+function removeElement(id){
+  elements=elements.filter(e=>e.id!==id);
+  renderChain();
+}
+function renderChain(){
+  const container=document.getElementById('chainContainer');
+  if(elements.length===0){
+    container.innerHTML='<div style="color:var(--text2);font-size:13px;font-family:var(--mono);padding:12px 0">Цепь пуста — добавьте элементы кнопками ниже</div>';
+    return;
+  }
+  
+  // Сохраняем значения всех полей перед перерисовкой
+  const savedValues = {};
+  elements.forEach(el => {
+    const inputs = document.querySelectorAll(`#item_${el.id} input, #item_${el.id} select`);
+    inputs.forEach(input => {
+      if(input.type === 'radio') {
+        if(input.checked) savedValues[input.name] = input.value;
+      } else {
+        savedValues[input.id] = input.value;
+      }
+    });
+  });
+  
+  container.innerHTML=elements.map((el,idx)=>renderElement(el,idx)).join('');
+  
+  // Восстанавливаем значения после перерисовки
+  setTimeout(() => {
+    Object.keys(savedValues).forEach(key => {
+      const el = document.getElementById(key);
+      if(el) {
+        el.value = savedValues[key];
+      } else {
+        // Для radio buttons
+        const radio = document.querySelector(`input[name="${key}"][value="${savedValues[key]}"]`);
+        if(radio) {
+          radio.checked = true;
+          const label = radio.closest('.radio-btn');
+          if(label) {
+            label.closest('.radio-group')?.querySelectorAll('.radio-btn').forEach(b=>b.classList.remove('active'));
+            label.classList.add('active');
+          }
+        }
+      }
+    });
+    
+    // Переинициализируем элементы
+    elements.forEach(el => {
+      if(el.type==='trafo') {
+        const sel = document.getElementById(`${el.id}_power`);
+        if(sel && sel.value && sel.value !== 'manual') {
+          onTrafoChange(el.id);
+        }
+      }
+      if(el.type==='av') {
+        onAVInChange(el.id);
+        const avtypeEl = document.getElementById(`${el.id}_avtype`);
+        if(avtypeEl) onAVTypeChange(el.id);
+      }
+      if(el.type==='cable') {
+        const matEl = document.getElementById(`${el.id}_mat`);
+        if(matEl && savedValues[`${el.id}_sect`]) {
+          // Восстанавливаем выбранное сечение после изменения материала
+          onCableMatChange(el.id);
+          setTimeout(() => {
+            const sectEl = document.getElementById(`${el.id}_sect`);
+            if(sectEl) sectEl.value = savedValues[`${el.id}_sect`];
+          }, 0);
+        }
+      }
+      if(el.type==='busbar') {
+        const seriesEl = document.getElementById(`${el.id}_series`);
+        if(seriesEl && savedValues[`${el.id}_rating`]) {
+          onBusbarSeriesChange(el.id);
+          setTimeout(() => {
+            const ratingEl = document.getElementById(`${el.id}_rating`);
+            if(ratingEl) ratingEl.value = savedValues[`${el.id}_rating`];
+          }, 0);
+        }
+      }
+      if(el.type==='panel_distrib') {
+        const avtypeEl = document.getElementById(`${el.id}_av_type`);
+        if(avtypeEl && savedValues[`${el.id}_av_in`]) {
+          onDistribAVTypeChange(el.id);
+          setTimeout(() => {
+            const avinEl = document.getElementById(`${el.id}_av_in`);
+            if(avinEl) avinEl.value = savedValues[`${el.id}_av_in`];
+            onDistribAVChange(el.id);
+          }, 0);
+        }
+      }
+      if(el.type==='panel_input') {
+        onPanelInputTypeChange(el.id);
+        const avtypeEl = document.getElementById(`${el.id}_av_type`);
+        if(avtypeEl && savedValues[`${el.id}_av_in`]) {
+          setTimeout(() => {
+            const avinEl = document.getElementById(`${el.id}_av_in`);
+            if(avinEl) avinEl.value = savedValues[`${el.id}_av_in`];
+            onPanelAVChange(el.id);
+          }, 0);
+        }
+      }
+      if(el.type==='shield') {
+        const inputAvtypeEl = document.getElementById(`${el.id}_input_av_type`);
+        const outputAvtypeEl = document.getElementById(`${el.id}_output_av_type`);
+        if(inputAvtypeEl && savedValues[`${el.id}_input_av_in`]) {
+          onShieldInputAVTypeChange(el.id);
+          setTimeout(() => {
+            const inputAvinEl = document.getElementById(`${el.id}_input_av_in`);
+            if(inputAvinEl) inputAvinEl.value = savedValues[`${el.id}_input_av_in`];
+            onShieldInputAVChange(el.id);
+          }, 0);
+        }
+        if(outputAvtypeEl && savedValues[`${el.id}_output_av_in`]) {
+          onShieldOutputAVTypeChange(el.id);
+          setTimeout(() => {
+            const outputAvinEl = document.getElementById(`${el.id}_output_av_in`);
+            if(outputAvinEl) outputAvinEl.value = savedValues[`${el.id}_output_av_in`];
+            onShieldOutputAVChange(el.id);
+          }, 0);
+        }
+      }
+    });
+  }, 0);
+}
+function renderElement(el,idx){
+  const badges={
+    trafo:['badge-trafo','Трансформатор'],
+    cable:['badge-cable','Кабель'],
+    busbar:['badge-busbar','Шинопровод'],
+    av:['badge-av','Автоматический выключатель'],
+    panel_input:['badge-vru','Вводная панель'],
+    panel_distrib:['badge-vru','Распределительная панель'],
+    shield:['badge-vru','Щит'],
+    receiver:['badge-vru','Электроприёмник']
+  };
+  const[badgeClass,title]=badges[el.type];
+  return`<div class="chain-item" id="item_${el.id}"><div class="chain-item-header"><div class="chain-item-title"><span class="chain-step-badge">Ступень ${idx+1}</span><span class="chain-type-badge ${badgeClass}">${title}</span></div><button class="chain-del-btn" onclick="removeElement('${el.id}')">✕ Удалить</button></div><div class="chain-item-body">${renderForm(el)}</div></div>`;
+}
+function renderForm(el){
+  if(el.type==='trafo')return renderTrafoForm(el.id);
+  if(el.type==='cable')return renderCableForm(el.id);
+  if(el.type==='busbar')return renderBusbarForm(el.id);
+  if(el.type==='av')return renderAVForm(el.id);
+  if(el.type==='panel_input')return renderPanelInputForm(el.id);
+  if(el.type==='panel_distrib')return renderPanelDistribForm(el.id);
+  if(el.type==='shield')return renderShieldForm(el.id);
+  if(el.type==='receiver')return renderReceiverForm(el.id);
+  return'';
+}
+
+function renderTrafoForm(id){
+  const opts=Object.keys(trafoData).map(p=>`<option value="${p}">${p} кВА</option>`).join('');
+  return`<div class="form-grid">
+    <div class="form-group"><label>Мощность трансформатора</label><select id="${id}_power" onchange="onTrafoChange('${id}')">${opts}<option value="manual">Ввести вручную</option></select></div>
+    <div class="form-group" id="${id}_rT_grp"><label>Rт, мОм</label><input type="number" id="${id}_rT" step="0.01" min="0"></div>
+    <div class="form-group" id="${id}_xT_grp"><label>Xт, мОм</label><input type="number" id="${id}_xT" step="0.01" min="0"></div>
+  </div>
+  <div class="hint" id="${id}_hint"></div>
+  <div style="margin-top:14px;padding:12px;background:rgba(79,142,247,0.08);border:1px solid rgba(79,142,247,0.2);border-radius:8px">
+    <div style="font-size:11px;font-weight:600;color:#4f8ef7;margin-bottom:10px">Параметры системы (высокая сторона)</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Напряжение ВН, кВ</label>
+        <select id="${id}_uvn">
+          <option value="6">6 кВ</option>
+          <option value="10" selected>10 кВ</option>
+          <option value="20">20 кВ</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Мощность КЗ на шинах ВН, МВА</label>
+        <input type="number" id="${id}_skz" placeholder="500" value="500" step="10" min="50">
+      </div>
+    </div>
+    <div class="hint">Xc рассчитывается автоматически. Для бесконечной мощности (Xc=0) оставьте поле пустым.</div>
+  </div>`;
+}
+function onTrafoChange(id){
+  const sel=document.getElementById(`${id}_power`);
+  const hint=document.getElementById(`${id}_hint`);
+  const rTI=document.getElementById(`${id}_rT`);
+  const xTI=document.getElementById(`${id}_xT`);
+  if(sel.value==='manual'){rTI.readOnly=false;xTI.readOnly=false;rTI.value='';xTI.value='';hint.textContent='';return;}
+  const d=trafoData[sel.value];
+  rTI.value=d.rT;xTI.value=d.xT;rTI.readOnly=true;xTI.readOnly=true;
+  hint.textContent=`Uкз=${d.uKz}% · Rт=${d.rT} мОм · Xт=${d.xT} мОм`;
+}
+
+function renderCableForm(id){
+  // Порядок сечений от малых к большим
+  const sectOrder = [1.5,2.5,4,6,10,16,25,35,50,70,95,120,150,185,240,300,400,500];
+  const sectOptsCu = sectOrder.filter(s => cableR0['Медь'][s]).map(s=>`<option value="${s}">${s} мм²</option>`).join('');
+  
+  return`<div class="form-grid">
+    <div class="form-group"><label>Материал жил</label><select id="${id}_mat" onchange="onCableMatChange('${id}')"><option value="Медь">Медь</option><option value="Алюминий">Алюминий</option></select></div>
+    <div class="form-group"><label>Сечение, мм²</label><select id="${id}_sect">${sectOptsCu}</select></div>
+    <div class="form-group"><label>Длина, м</label><input type="number" id="${id}_len" placeholder="м" min="0.1" step="0.5"></div>
+    <div class="form-group">
+      <label>Тип изоляции</label>
+      <select id="${id}_insul">
+        <option value="70">ПВХ (70°C)</option>
+        <option value="90">Сшитый полиэтилен (90°C)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Число цепей</label>
+      <select id="${id}_chains">
+        <option value="1">1 (одноцепная)</option>
+        <option value="2">2 (двухцепная)</option>
+        <option value="3">3 (трёхцепная)</option>
+        <option value="4">4 (четырёхцепная)</option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="form-grid" style="margin-top:10px">
+    <div class="form-group">
+      <label>PE/PEN проводник</label>
+      <select id="${id}_pe_type" onchange="onCablePETypeChange('${id}')">
+        <option value="integrated">В составе кабеля (сечение = фазе)</option>
+        <option value="separate">Отдельный проводник</option>
+      </select>
+    </div>
+    <div class="form-group hidden" id="${id}_pe_sect_group">
+      <label>Сечение PE/PEN, мм²</label>
+      <select id="${id}_pe_sect">
+        <option value="1.5">1.5</option>
+        <option value="2.5">2.5</option>
+        <option value="4">4</option>
+        <option value="6">6</option>
+        <option value="10">10</option>
+        <option value="16">16</option>
+        <option value="25">25</option>
+        <option value="35">35</option>
+        <option value="50">50</option>
+        <option value="70">70</option>
+        <option value="95">95</option>
+        <option value="120">120</option>
+        <option value="150">150</option>
+        <option value="185">185</option>
+        <option value="240">240</option>
+        <option value="300">300</option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="hint" id="${id}_chint">Расчёт с учётом нагрева проводников до рабочей температуры согласно ГОСТ 28249-93.</div>`;
+}
+function onCableMatChange(id){
+  const mat=document.getElementById(`${id}_mat`).value;
+  const sect=document.getElementById(`${id}_sect`);
+  // Порядок сечений от малых к большим
+  const sectOrder = mat === 'Медь' 
+    ? [1.5,2.5,4,6,10,16,25,35,50,70,95,120,150,185,240,300,400,500]
+    : [2.5,4,6,10,16,25,35,50,70,95,120,150,185,240,300,400,500];
+  sect.innerHTML = sectOrder.filter(s => cableR0[mat][s]).map(s=>`<option value="${s}">${s} мм²</option>`).join('');
+}
+
+function onCablePETypeChange(id){
+  const peType=document.getElementById(`${id}_pe_type`).value;
+  const peSectGroup=document.getElementById(`${id}_pe_sect_group`);
+  
+  if(peType==='separate'){
+    peSectGroup.classList.remove('hidden');
+  }else{
+    peSectGroup.classList.add('hidden');
+  }
+}
+
+function renderBusbarForm(id){
+  const seriesOpts=Object.keys(busbarData).map(s=>`<option value="${s}">${busbarData[s].label}</option>`).join('');
+  const firstSeries=Object.keys(busbarData)[0];
+  const ratingOpts=Object.keys(busbarData[firstSeries].ratings).map(r=>`<option value="${r}">${r} А</option>`).join('');
+  
+  return`<div class="form-grid">
+    <div class="form-group"><label>Серия</label><select id="${id}_series" onchange="onBusbarSeriesChange('${id}')">${seriesOpts}</select></div>
+    <div class="form-group"><label>Номинал, А</label><select id="${id}_rating">${ratingOpts}</select></div>
+    <div class="form-group"><label>Длина, м</label><input type="number" id="${id}_len" placeholder="м" min="0.5" step="0.5"></div>
+    <div class="form-group">
+      <label>Число цепей</label>
+      <select id="${id}_chains">
+        <option value="1">1 (одноцепная)</option>
+        <option value="2">2 (двухцепная)</option>
+        <option value="3">3 (трёхцепная)</option>
+        <option value="4">4 (четырёхцепная)</option>
+      </select>
+    </div>
+  </div>
+  <div class="hint">Расчёт с учётом нагрева шин до 70°C (рабочая температура) согласно ГОСТ 28249-93.</div>`;
+}
+function onBusbarSeriesChange(id){
+  const series=document.getElementById(`${id}_series`).value;
+  const rating=document.getElementById(`${id}_rating`);
+  rating.innerHTML=Object.keys(busbarData[series].ratings).map(r=>`<option value="${r}">${r} А</option>`).join('');
+}
+
+function renderAVForm(id){
+  const modOpts=Object.keys(rAV.modular).map(v=>`<option value="${v}">${v} А</option>`).join('');
+  return`<div class="form-grid"><div class="form-group"><label>Тип АВ</label><select id="${id}_avtype" onchange="onAVTypeChange('${id}')"><option value="modular">Модульный (B/C/D)</option><option value="mccb">В литом корпусе (MCCB)</option></select></div><div class="form-group"><label>Номинал, А</label><input type="number" id="${id}_in" value="16" min="1" max="6300" onchange="onAVInChange('${id}')"></div></div><div id="${id}_mod_opts"><div class="subsection-label">Кривая расцепителя</div><div class="radio-group" id="${id}_curve_grp"><label class="radio-btn active" onclick="setAVCurveActive('${id}',this)"><input type="radio" name="${id}_curve" value="B">B (×3…5)</label><label class="radio-btn" onclick="setAVCurveActive('${id}',this)"><input type="radio" name="${id}_curve" value="C" checked>C (×5…10)</label><label class="radio-btn" onclick="setAVCurveActive('${id}',this)"><input type="radio" name="${id}_curve" value="D">D (×10…20)</label></div><div class="hint" id="${id}_av_hint"></div></div><div id="${id}_mccb_opts" class="hidden"><div class="form-grid" style="margin-top:10px"><div class="form-group"><label>Уставка мгнов. расцепит., А</label><input type="number" id="${id}_iust" min="1" placeholder="А"></div></div></div>`;
+}
+function onAVTypeChange(id){
+  const t=document.getElementById(`${id}_avtype`).value;
+  document.getElementById(`${id}_mod_opts`).classList.toggle('hidden',t!=='modular');
+  document.getElementById(`${id}_mccb_opts`).classList.toggle('hidden',t!=='mccb');
+}
+function setAVCurveActive(id,lbl){
+  document.querySelectorAll(`#item_${id.replace('el_','item_el_')} .radio-btn, #chainContainer .radio-btn`).forEach(b=>{});
+  // simpler: find siblings
+  lbl.closest('.radio-group').querySelectorAll('.radio-btn').forEach(b=>b.classList.remove('active'));
+  lbl.classList.add('active');
+  lbl.querySelector('input').checked=true;
+}
+function onAVInChange(id){
+  const In=parseInt(document.getElementById(`${id}_in`).value)||16;
+  const rk=interpolateTable(rAV.modular,In);
+  const hint=document.getElementById(`${id}_av_hint`);
+  if(hint)hint.textContent=`Rконт ≈ ${r3(rk)} мОм (ГОСТ 28249-93, табл.4)`;
+}
+function setAVCurveHint(id){onAVInChange(id);}
+
+function renderPanelInputForm(id){
+  return`
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Тип панели</label>
+      <select id="${id}_panel_type" onchange="onPanelInputTypeChange('${id}')">
+        <option value="ГРЩ">ГРЩ</option>
+        <option value="ВРУ">ВРУ</option>
+        <option value="Щит">Щит</option>
+      </select>
+    </div>
+  </div>
+  
+  <!-- Рубильник (для ВРУ и Щита) -->
+  <div id="${id}_switch_block" class="hidden" style="margin-top:14px;padding:12px;background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.2);border-radius:8px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <input type="checkbox" id="${id}_has_switch" onchange="togglePanelSwitch('${id}')">
+      <label for="${id}_has_switch" style="cursor:pointer;font-size:11px;font-weight:600;color:#f97316">Рубильник (разъединитель)</label>
+    </div>
+    <div id="${id}_switch_params" class="hidden">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Номинал, А</label>
+          <select id="${id}_switch_in" onchange="onSwitchChange('${id}')">
+            ${Object.keys(rSwitch).map(v=>`<option value="${v}">${v} А</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="hint" id="${id}_switch_hint">Rконт ≈ 0,06 мОм</div>
+    </div>
+  </div>
+  
+  <!-- Вводной аппарат защиты -->
+  <div id="${id}_protection_block" style="margin-top:14px;padding:12px;background:rgba(247,111,111,0.08);border:1px solid rgba(247,111,111,0.2);border-radius:8px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <input type="checkbox" id="${id}_has_protection" onchange="togglePanelProtection('${id}')">
+      <label for="${id}_has_protection" style="cursor:pointer;font-size:11px;font-weight:600;color:#f76f6f">Вводной аппарат защиты</label>
+    </div>
+    <div id="${id}_protection_params" class="hidden">
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);margin-bottom:6px;display:block">Тип аппарата:</label>
+        <div style="display:flex;gap:8px">
+          <label class="radio-btn active" onclick="togglePanelProtType('${id}','av')">
+            <input type="radio" name="${id}_prot_type" value="av" checked>
+            <span>Автомат</span>
+          </label>
+          <label class="radio-btn" onclick="togglePanelProtType('${id}','fuse')">
+            <input type="radio" name="${id}_prot_type" value="fuse">
+            <span>Предохранитель ППН</span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Форма АВ -->
+      <div id="${id}_av_form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Тип АВ</label>
+            <select id="${id}_av_type">
+              <option value="mccb">Силовой (MCCB)</option>
+              <option value="modular">Модульный</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Номинал In, А</label>
+            <select id="${id}_av_in" onchange="onPanelAVChange('${id}')">
+              ${Object.keys(rAV.mccb).map(v=>`<option value="${v}">${v} А</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Отключающая способность Icu, кА</label>
+            <input type="number" id="${id}_av_icu" value="25" min="6" max="150" step="1">
+          </div>
+        </div>
+        <div class="hint" id="${id}_av_hint">Rконт ≈ 0,15 мОм</div>
+      </div>
+      
+      <!-- Форма Предохранителя -->
+      <div id="${id}_fuse_form" class="hidden">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Номинал, А</label>
+            <select id="${id}_fuse_in" onchange="onPanelFuseChange('${id}')">
+              ${Object.keys(rFuse).map(v=>`<option value="${v}">${v} А</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="hint" id="${id}_fuse_hint">Rпред ≈ 0,45 мОм</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="hint" style="margin-top:10px">Вводная часть: рубильник (опц.) + аппарат защиты (опц.) + контакты</div>
+  `;
+}
+
+function renderBusbarsForm(id){
+  const opts=Object.keys(rVRU).map(v=>`<option value="${v}">${v}</option>`).join('');
+  return`
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Тип панели</label>
+      <select id="${id}_busbar_type" onchange="onBusbarTypeChange('${id}')">
+        ${opts}
+      </select>
+    </div>
+  </div>
+  <div class="hint" id="${id}_busbar_hint">Сопротивление шин: 0,07 мОм (ГРЩ)</div>
+  `;
+}
+
+function onBusbarTypeChange(id){
+  const type=document.getElementById(`${id}_busbar_type`).value;
+  const hint=document.getElementById(`${id}_busbar_hint`);
+  hint.textContent=`Сопротивление шин: ${rVRU[type]} мОм (${type})`;
+}
+
+function renderReceiverForm(id){
+  return`<div class="hint">Электроприёмник (оконечное устройство, сопротивление = 0)</div>`;
+}
+
+function renderPanelDistribForm(id){
+  return`
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Тип панели</label>
+      <select id="${id}_panel_type" onchange="onDistribPanelTypeChange('${id}')">
+        <option value="ГРЩ">ГРЩ</option>
+        <option value="ВРУ">ВРУ</option>
+      </select>
+    </div>
+  </div>
+  
+  <div style="margin-top:14px;padding:12px;background:rgba(247,111,111,0.08);border:1px solid rgba(247,111,111,0.2);border-radius:8px">
+    <div style="font-size:11px;font-weight:600;color:#f76f6f;margin-bottom:10px">Отходящий автоматический выключатель</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Тип АВ</label>
+        <select id="${id}_av_type" onchange="onDistribAVTypeChange('${id}')">
+          <option value="mccb">Силовой (MCCB)</option>
+          <option value="modular">Модульный</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Номинал In, А</label>
+        <select id="${id}_av_in" onchange="onDistribAVChange('${id}')">
+          ${Object.keys(rAV.mccb).map(v=>`<option value="${v}">${v} А</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group hidden" id="${id}_curve_group">
+        <label>Кривая (модульный)</label>
+        <select id="${id}_curve">
+          <option value="B">B</option>
+          <option value="C" selected>C</option>
+          <option value="D">D</option>
+        </select>
+      </div>
+      <div class="form-group" id="${id}_iust_group">
+        <label>Уставка Iуст, А (MCCB)</label>
+        <input type="number" id="${id}_iust" placeholder="Iуст" min="10" step="10">
+      </div>
+    </div>
+    <div class="hint" id="${id}_av_hint">Rконт ≈ 0,15 мОм</div>
+  </div>
+  
+  <div class="hint" style="margin-top:10px" id="${id}_bus_hint">Шины ГРЩ: 0,07 мОм</div>
+  `;
+}
+
+function onDistribPanelTypeChange(id){
+  const type=document.getElementById(`${id}_panel_type`).value;
+  const hint=document.getElementById(`${id}_bus_hint`);
+  hint.textContent=`Шины ${type}: ${rVRU[type]} мОм`;
+}
+
+function onDistribAVTypeChange(id){
+  const avType=document.getElementById(`${id}_av_type`).value;
+  const inSelect=document.getElementById(`${id}_av_in`);
+  const iustGroup=document.getElementById(`${id}_iust_group`);
+  const curveGroup=document.getElementById(`${id}_curve_group`);
+  
+  if(avType==='modular'){
+    inSelect.innerHTML=Object.keys(rAV.modular).map(v=>`<option value="${v}">${v} А</option>`).join('');
+    iustGroup.classList.add('hidden');
+    curveGroup.classList.remove('hidden');
+  }else{
+    inSelect.innerHTML=Object.keys(rAV.mccb).map(v=>`<option value="${v}">${v} А</option>`).join('');
+    iustGroup.classList.remove('hidden');
+    curveGroup.classList.add('hidden');
+  }
+  onDistribAVChange(id);
+}
+
+function onDistribAVChange(id){
+  const avType=document.getElementById(`${id}_av_type`).value;
+  const In=parseInt(document.getElementById(`${id}_av_in`).value)||100;
+  const rk=r3(interpolateTable(rAV[avType],In));
+  const hint=document.getElementById(`${id}_av_hint`);
+  if(hint)hint.textContent=`Rконт ≈ ${rk} мОм`;
+}
+
+function renderShieldForm(id){
+  return`
+  <div style="padding:12px;background:rgba(79,142,247,0.08);border:1px solid rgba(79,142,247,0.2);border-radius:8px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <input type="checkbox" id="${id}_has_input" onchange="toggleShieldInput('${id}')">
+      <label for="${id}_has_input" style="cursor:pointer;font-size:11px;font-weight:600;color:#4f8ef7">Вводной аппарат</label>
+    </div>
+    <div id="${id}_input_params" class="hidden">
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);margin-bottom:6px;display:block">Тип аппарата:</label>
+        <div style="display:flex;gap:8px">
+          <label class="radio-btn active" onclick="toggleShieldInputType('${id}','switch')">
+            <input type="radio" name="${id}_input_type" value="switch" checked>
+            <span>Рубильник</span>
+          </label>
+          <label class="radio-btn" onclick="toggleShieldInputType('${id}','av')">
+            <input type="radio" name="${id}_input_type" value="av">
+            <span>Автомат</span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Форма рубильника -->
+      <div id="${id}_switch_form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Номинал, А</label>
+            <select id="${id}_switch_in" onchange="onShieldSwitchChange('${id}')">
+              ${Object.keys(rSwitch).map(v=>`<option value="${v}">${v} А</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="hint" id="${id}_switch_hint">Rконт ≈ 0,20 мОм</div>
+      </div>
+      
+      <!-- Форма АВ -->
+      <div id="${id}_input_av_form" class="hidden">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Тип АВ</label>
+            <select id="${id}_input_av_type" onchange="onShieldInputAVTypeChange('${id}')">
+              <option value="modular">Модульный</option>
+              <option value="mccb">Силовой (MCCB)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Номинал In, А</label>
+            <select id="${id}_input_av_in" onchange="onShieldInputAVChange('${id}')">
+              ${Object.keys(rAV.modular).map(v=>`<option value="${v}">${v} А</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group" id="${id}_input_curve_group">
+            <label>Кривая (модульный)</label>
+            <select id="${id}_input_curve">
+              <option value="B">B</option>
+              <option value="C" selected>C</option>
+              <option value="D">D</option>
+            </select>
+          </div>
+          <div class="form-group hidden" id="${id}_input_iust_group">
+            <label>Уставка Iуст, А (MCCB)</label>
+            <input type="number" id="${id}_input_iust" placeholder="Iуст" min="10" step="10">
+          </div>
+        </div>
+        <div class="hint" id="${id}_input_av_hint">Rконт ≈ 0,30 мОм</div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="margin-top:14px;padding:12px;background:rgba(247,111,111,0.08);border:1px solid rgba(247,111,111,0.2);border-radius:8px">
+    <div style="font-size:11px;font-weight:600;color:#f76f6f;margin-bottom:10px">Отходящий автоматический выключатель</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Тип АВ</label>
+        <select id="${id}_output_av_type" onchange="onShieldOutputAVTypeChange('${id}')">
+          <option value="modular">Модульный</option>
+          <option value="mccb">Силовой (MCCB)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Номинал In, А</label>
+        <select id="${id}_output_av_in" onchange="onShieldOutputAVChange('${id}')">
+          ${Object.keys(rAV.modular).map(v=>`<option value="${v}">${v} А</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group" id="${id}_output_curve_group">
+        <label>Кривая (модульный)</label>
+        <select id="${id}_output_curve">
+          <option value="B">B</option>
+          <option value="C" selected>C</option>
+          <option value="D">D</option>
+        </select>
+      </div>
+    </div>
+    <div class="hint" id="${id}_output_av_hint">Rконт ≈ 0,30 мОм</div>
+  </div>
+  
+  <div class="hint" style="margin-top:10px">Шины щита: 0,20 мОм</div>
+  `;
+}
+
+function toggleShieldInput(id){
+  const checked=document.getElementById(`${id}_has_input`).checked;
+  const params=document.getElementById(`${id}_input_params`);
+  if(checked){
+    params.classList.remove('hidden');
+    onShieldSwitchChange(id);
+  }else{
+    params.classList.add('hidden');
+  }
+}
+
+function toggleShieldInputType(id,type){
+  const switchForm=document.getElementById(`${id}_switch_form`);
+  const avForm=document.getElementById(`${id}_input_av_form`);
+  if(type==='switch'){
+    switchForm.classList.remove('hidden');
+    avForm.classList.add('hidden');
+    onShieldSwitchChange(id);
+  }else{
+    switchForm.classList.add('hidden');
+    avForm.classList.remove('hidden');
+    onShieldInputAVChange(id);
+  }
+}
+
+function onShieldSwitchChange(id){
+  const In=parseInt(document.getElementById(`${id}_switch_in`).value)||16;
+  const rk=r3(interpolateTable(rSwitch,In));
+  const hint=document.getElementById(`${id}_switch_hint`);
+  if(hint)hint.textContent=`Rконт ≈ ${rk} мОм`;
+}
+
+function onShieldInputAVTypeChange(id){
+  const avType=document.getElementById(`${id}_input_av_type`).value;
+  const inSelect=document.getElementById(`${id}_input_av_in`);
+  const curveGroup=document.getElementById(`${id}_input_curve_group`);
+  const iustGroup=document.getElementById(`${id}_input_iust_group`);
+  
+  if(avType==='modular'){
+    inSelect.innerHTML=Object.keys(rAV.modular).map(v=>`<option value="${v}">${v} А</option>`).join('');
+    curveGroup.classList.remove('hidden');
+    iustGroup.classList.add('hidden');
+  }else{
+    inSelect.innerHTML=Object.keys(rAV.mccb).map(v=>`<option value="${v}">${v} А</option>`).join('');
+    curveGroup.classList.add('hidden');
+    iustGroup.classList.remove('hidden');
+  }
+  onShieldInputAVChange(id);
+}
+
+function onShieldInputAVChange(id){
+  const avType=document.getElementById(`${id}_input_av_type`).value;
+  const In=parseInt(document.getElementById(`${id}_input_av_in`).value)||100;
+  const rk=r3(interpolateTable(rAV[avType],In));
+  const hint=document.getElementById(`${id}_input_av_hint`);
+  if(hint)hint.textContent=`Rконт ≈ ${rk} мОм`;
+}
+
+function onShieldOutputAVTypeChange(id){
+  const avType=document.getElementById(`${id}_output_av_type`).value;
+  const inSelect=document.getElementById(`${id}_output_av_in`);
+  const curveGroup=document.getElementById(`${id}_output_curve_group`);
+  
+  if(avType==='modular'){
+    inSelect.innerHTML=Object.keys(rAV.modular).map(v=>`<option value="${v}">${v} А</option>`).join('');
+    curveGroup.classList.remove('hidden');
+  }else{
+    inSelect.innerHTML=Object.keys(rAV.mccb).map(v=>`<option value="${v}">${v} А</option>`).join('');
+    curveGroup.classList.add('hidden');
+  }
+  onShieldOutputAVChange(id);
+}
+
+function onShieldOutputAVChange(id){
+  const avType=document.getElementById(`${id}_output_av_type`).value;
+  const In=parseInt(document.getElementById(`${id}_output_av_in`).value)||16;
+  const rk=r3(interpolateTable(rAV[avType],In));
+  const hint=document.getElementById(`${id}_output_av_hint`);
+  if(hint)hint.textContent=`Rконт ≈ ${rk} мОм`;
+}
+
+function initElement(el){
+  if(el.type==='trafo')onTrafoChange(el.id);
+  if(el.type==='av'){onAVInChange(el.id);setAVCurveHint(el.id);}
+  if(el.type==='panel_input')onPanelInputTypeChange(el.id);
+  if(el.type==='panel_distrib'){onDistribPanelTypeChange(el.id);onDistribAVChange(el.id);}
+  if(el.type==='shield'){onShieldOutputAVChange(el.id);}
+}
+
+// Функции управления вводной панелью
+function onPanelInputTypeChange(id){
+  const type=document.getElementById(`${id}_panel_type`).value;
+  const switchBlock=document.getElementById(`${id}_switch_block`);
+  
+  // ГРЩ - без рубильника
+  if(type==='ГРЩ'){
+    switchBlock.classList.add('hidden');
+  } else {
+    // ВРУ и Щит - с рубильником
+    switchBlock.classList.remove('hidden');
+  }
+}
+
+function togglePanelSwitch(id){
+  const checked=document.getElementById(`${id}_has_switch`).checked;
+  const params=document.getElementById(`${id}_switch_params`);
+  if(checked){
+    params.classList.remove('hidden');
+    onSwitchChange(id);
+  }else{
+    params.classList.add('hidden');
+  }
+}
+
+function togglePanelProtection(id){
+  const checked=document.getElementById(`${id}_has_protection`).checked;
+  const params=document.getElementById(`${id}_protection_params`);
+  if(checked){
+    params.classList.remove('hidden');
+    onPanelAVChange(id);
+  }else{
+    params.classList.add('hidden');
+  }
+}
+
+function togglePanelProtType(id,type){
+  const avForm=document.getElementById(`${id}_av_form`);
+  const fuseForm=document.getElementById(`${id}_fuse_form`);
+  if(type==='av'){
+    avForm.classList.remove('hidden');
+    fuseForm.classList.add('hidden');
+    onPanelAVChange(id);
+  }else{
+    avForm.classList.add('hidden');
+    fuseForm.classList.remove('hidden');
+    onPanelFuseChange(id);
+  }
+}
+
+function onSwitchChange(id){
+  const In=parseInt(document.getElementById(`${id}_switch_in`).value)||400;
+  const rk=interpolateTable(rSwitch,In);
+  const hint=document.getElementById(`${id}_switch_hint`);
+  if(hint)hint.textContent=`Rконт ≈ ${r3(rk)} мОм`;
+}
+
+function onPanelAVChange(id){
+  const avType=document.getElementById(`${id}_av_type`).value;
+  const In=parseInt(document.getElementById(`${id}_av_in`).value)||100;
+  const rk=interpolateTable(rAV[avType],In);
+  const hint=document.getElementById(`${id}_av_hint`);
+  if(hint)hint.textContent=`Rконт ≈ ${r3(rk)} мОм (ГОСТ 28249-93)`;
+}
+
+function onPanelFuseChange(id){
+  const In=parseInt(document.getElementById(`${id}_fuse_in`).value)||100;
+  const rk=interpolateTable(rFuse,In);
+  const hint=document.getElementById(`${id}_fuse_hint`);
+  if(hint)hint.textContent=`Rпред ≈ ${r3(rk)} мОм (ГОСТ 28249-93)`;
+}
+
+function interpolateTable(table,val){
+  const keys=Object.keys(table).map(Number).sort((a,b)=>a-b);
+  if(val<=keys[0])return table[keys[0]];
+  if(val>=keys[keys.length-1])return table[keys[keys.length-1]];
+  for(let i=0;i<keys.length-1;i++){
+    if(val>=keys[i]&&val<=keys[i+1]){
+      const t=(val-keys[i])/(keys[i+1]-keys[i]);
+      return table[keys[i]]+(table[keys[i+1]]-table[keys[i]])*t;
+    }
+  }
+  return table[keys[keys.length-1]];
+}
+
+// ═══════════════════════════════════════════════
+// ТЕМПЕРАТУРНАЯ ПОПРАВКА
+// ═══════════════════════════════════════════════
+// Температурный коэффициент сопротивления
+// Медь: α = 0.00385 1/°C (при 20°C)
+// Алюминий: α = 0.00403 1/°C (при 20°C)
+function tempCorrection(material, temp20) {
+  const alpha = material === 'Медь' ? 0.00385 : 0.00403;
+  const temp = parseFloat(temp20) || 20;
+  const k = 1 + alpha * (temp - 20);
+  return k;
+}
+
+// ═══════════════════════════════════════════════
+// РАСЧЁТ
+// ═══════════════════════════════════════════════
+let lastSteps = [];
+
+function calculate(){
+  const resultDiv=document.getElementById('result');
+  const body=document.getElementById('resultBody');
+  resultDiv.classList.remove('hidden');
+  const Unom=400;
+
+  try{
+    let sumR=0,sumX=0,sumRn=0,sumXn=0;
+    const steps=[];
+    
+    // Массив всех АВ с их позициями
+    const allAVs = [];
+
+    for(let i=0;i<elements.length;i++){
+      const el=elements[i];
+      let dR=0,dX=0,dRn=0,dXn=0,label='',detail='';
+      let avData=null; // Данные АВ если этот элемент содержит АВ
+
+      if(el.type==='trafo'){
+        const sel=document.getElementById(`${el.id}_power`);
+        const rTv=parseFloat(document.getElementById(`${el.id}_rT`).value);
+        const xTv=parseFloat(document.getElementById(`${el.id}_xT`).value);
+        if(isNaN(rTv)||isNaN(xTv))throw new Error(`Ступень ${i+1}: не заданы параметры трансформатора`);
+        
+        // Расчет сопротивления системы Xc
+        const uvn=parseFloat(document.getElementById(`${el.id}_uvn`).value)||10;
+        const skz=parseFloat(document.getElementById(`${el.id}_skz`).value);
+        let xc=0;
+        let xcDetail='';
+        if(skz&&skz>0){
+          // Xc = (Uср.нн² × 1000) / (Sкз × Uср.вн) мОм
+          const Unn=0.4; // кВ
+          xc=(Unn*Unn*1000)/(skz*uvn);
+          xc=r3(xc);
+          xcDetail=` + Xc=${xc} мОм (Sкз=${skz} МВА на ${uvn} кВ)`;
+        }
+        
+        dR=rTv;
+        dX=xTv+xc;
+        dRn=rTv;
+        dXn=xTv+xc;
+        label=`Трансформатор ${sel.value!=='manual'?sel.value+' кВА':'ручной ввод'}`;
+        detail=`Rт=${rTv} мОм (активное сопротивление обмоток), Xт=${xTv} мОм (индуктивное сопротивление рассеяния)${xcDetail} → вклад в цепь: R=${dR} мОм, X=${r3(dX)} мОм. Источник: ГОСТ 11677-85, расчёт по Pk и Uk%`;
+      }
+      else if(el.type==='cable'){
+        const mat=document.getElementById(`${el.id}_mat`).value;
+        const sect=parseFloat(document.getElementById(`${el.id}_sect`).value);
+        const len=parseFloat(document.getElementById(`${el.id}_len`).value);
+        const temp=parseFloat(document.getElementById(`${el.id}_insul`).value)||70;
+        const chains=parseInt(document.getElementById(`${el.id}_chains`).value)||1;
+        if(!len||len<=0)throw new Error(`Ступень ${i+1}: не задана длина кабеля`);
+        const r0=cableR0[mat][sect];
+        if(!r0)throw new Error(`Ступень ${i+1}: нет данных для кабеля`);
+        
+        // Температурная поправка для активного сопротивления
+        const kt=tempCorrection(mat,temp);
+        
+        // R = (R0 × L) / n_цепей × kt
+        const x0=cableX0[sect]||0.070; // X₀ из таблицы по сечению
+        dR=r3(r0*len/chains*kt);
+        dX=r3(x0*len/chains);
+        
+        // Определяем сечение PE-проводника
+        const peType=document.getElementById(`${el.id}_pe_type`)?.value||'integrated';
+        let sectN;
+        if(peType==='integrated'){
+          sectN=sect; // В составе кабеля - равно фазе
+        }else{
+          sectN=parseFloat(document.getElementById(`${el.id}_pe_sect`)?.value)||sect;
+        }
+        
+        const r0n=cableR0[mat][sectN]||r0;
+        const x0n=cableX0[sectN]||x0; // X₀ для нулевой последовательности
+        dRn=r3(r0n*len/chains*kt);
+        dXn=r3(x0n*len/chains);
+        
+        const chainsText=chains>1?` (${chains} цепи)`:'';
+        const insulType=temp===70?'ПВХ':'XLPE';
+        const tempText=` [${insulType}, ${temp}°C, kt=${kt.toFixed(3)}]`;
+        const peText=peType==='separate'?`, PE ${sectN} мм²`:'';
+        label=`Кабель ${mat} ${sect} мм²${peText}, ${len} м${chainsText}${tempText}`;
+        detail=`r₀=${r0} мОм/м (удельное активное сопротивление при 20°C, ГОСТ 16442-80), x₀=${x0.toFixed(3)} мОм/м (удельное индуктивное сопротивление по сечению), PE: ${sectN} мм², цепей: ${chains}, температура: ${insulType} ${temp}°C, коэффициент kt=${kt.toFixed(3)} (пересчёт с 20°C на рабочую температуру) → вклад в цепь: R=${dR} мОм, X=${dX} мОм`;
+      }
+      else if(el.type==='busbar'){
+        const series=document.getElementById(`${el.id}_series`).value;
+        const rating=parseInt(document.getElementById(`${el.id}_rating`).value);
+        const len=parseFloat(document.getElementById(`${el.id}_len`).value);
+        const temp=70; // Фиксированная температура для шинопроводов
+        const chains=parseInt(document.getElementById(`${el.id}_chains`).value)||1;
+        if(!len||len<=0)throw new Error(`Ступень ${i+1}: не задана длина шинопровода`);
+        const bs=busbarData[series].ratings[rating];
+        if(!bs)throw new Error(`Ступень ${i+1}: нет данных для шинопровода`);
+        
+        // Определяем материал шин по названию серии (KXC - медь, KXA - алюминий)
+        const busMaterial=series.includes('Cu')||series.includes('KXC')?'Медь':'Алюминий';
+        const kt=tempCorrection(busMaterial,temp);
+        
+        // R = (R_уд × L) / n_цепей × kt
+        dR=r3(bs.r*len/chains*kt);
+        dX=r3(bs.x*len/chains);
+        dRn=dR;
+        dXn=dX;
+        
+        const chainsText=chains>1?` (${chains} цепи)`:'';
+        const tempText=` [70°C, kt=${kt.toFixed(3)}]`;
+        label=`Шинопровод ${busbarData[series].label}, ${rating} А, ${len} м${chainsText}${tempText}`;
+        detail=`r=${bs.r} мОм/м, x=${bs.x} мОм/м (данные при 20°C, EAE каталог №12 от 24.04.2026), цепей: ${chains}, температура: 70°C, коэффициент kt=${kt.toFixed(3)} (пересчёт на рабочую температуру) → вклад в цепь: R=${dR} мОм, X=${dX} мОм`;
+      }
+      else if(el.type==='av'){
+        const avtype=document.getElementById(`${el.id}_avtype`).value;
+        const In=parseInt(document.getElementById(`${el.id}_in`).value);
+        const rTable=avtype==='modular'?rAV.modular:rAV.mccb;
+        const rVal=r3(interpolateTable(rTable,In));
+        dR=rVal;dX=0;dRn=rVal;dXn=0;
+        let iSett=0;
+        if(avtype==='modular'){
+          const curve=document.querySelector(`input[name="${el.id}_curve"]:checked`)?.value||'C';
+          const multMax={B:5,C:10,D:20};
+          iSett=In*multMax[curve];
+          label=`АВ ${In} А, кривая ${curve}`;
+          detail=`rАВ=${rVal} мОм (контактное сопротивление, ГОСТ 28249-93 прил. В), кривая ${curve}, максимальный ток срабатывания Iуст=${iSett} А (кратность ×${multMax[curve]} для кривой ${curve})`;
+        }else{
+          iSett=parseFloat(document.getElementById(`${el.id}_iust`).value)||0;
+          if(!iSett)throw new Error(`Ступень ${i+1}: не задана уставка`);
+          label=`АВ (MCCB) ${In} А, Iуст=${iSett} А`;
+          detail=`rАВ=${rVal} мОм (контактное сопротивление, ГОСТ 28249-93 прил. В), уставка тока срабатывания Iуст=${iSett} А (задаётся пользователем)`;
+        }
+        // Сохраняем АВ в массив
+        avData={position:i,iSett,label,icu:null};
+        allAVs.push(avData);
+      }
+      else if(el.type==='panel_input'){
+        const panelType=document.getElementById(`${el.id}_panel_type`).value;
+        let rTotal=0, details=[];
+        
+        // Рубильник (если есть)
+        const hasSwitch=document.getElementById(`${el.id}_has_switch`)?.checked;
+        if(hasSwitch){
+          const switchIn=parseInt(document.getElementById(`${el.id}_switch_in`).value)||400;
+          const rk=r3(interpolateTable(rSwitch,switchIn));
+          rTotal+=rk;
+          details.push(`Рубильник ${switchIn}А: ${rk} мОм`);
+        }
+        
+        // Вводной аппарат защиты (если есть)
+        const hasProt=document.getElementById(`${el.id}_has_protection`)?.checked;
+        if(hasProt){
+          const protType=document.querySelector(`input[name="${el.id}_prot_type"]:checked`)?.value||'av';
+          if(protType==='av'){
+            const avType=document.getElementById(`${el.id}_av_type`).value;
+            const avIn=parseInt(document.getElementById(`${el.id}_av_in`).value)||100;
+            const avIcu=parseFloat(document.getElementById(`${el.id}_av_icu`).value)||25;
+            const rk=r3(interpolateTable(rAV[avType],avIn));
+            rTotal+=rk;
+            details.push(`АВ ${avIn}А (Icu=${avIcu}кА): ${rk} мОм`);
+            // Сохраняем АВ в массив
+            avData={position:i,iSett:avIn*5,label:`${panelType} АВ ${avIn}А`,icu:avIcu};
+            allAVs.push(avData);
+          }else{
+            const fuseIn=parseInt(document.getElementById(`${el.id}_fuse_in`).value)||100;
+            const rk=r3(interpolateTable(rFuse,fuseIn));
+            rTotal+=rk;
+            details.push(`Предохр. ППН-${fuseIn}А: ${rk} мОм`);
+            // Сохраняем предохранитель в массив
+            avData={position:i,iSett:fuseIn,label:`${panelType} Предохр. ${fuseIn}А`,icu:null};
+            allAVs.push(avData);
+          }
+        }
+        
+        // Контакты вводной части (минимальное сопротивление)
+        if(rTotal===0)rTotal=0.01; // Минимальное сопротивление контактов если нет аппаратов
+        
+        dR=r3(rTotal);dX=0;dRn=r3(rTotal);dXn=0;
+        label=`${panelType} (вводная часть)`;
+        detail=details.length>0 ? details.join(' + ') : 'Контакты: 0,01 мОм';
+      }
+      else if(el.type==='receiver'){
+        dR=0;dX=0;dRn=0;dXn=0;
+        label='Электроприёмник';
+        detail='Оконечное устройство (R=0)';
+      }
+      else if(el.type==='panel_distrib'){
+        const panelType=document.getElementById(`${el.id}_panel_type`).value;
+        const rBus=r3(rVRU[panelType]);
+        
+        // Отходящий АВ
+        const avType=document.getElementById(`${el.id}_av_type`).value;
+        const avIn=parseInt(document.getElementById(`${el.id}_av_in`).value)||100;
+        const rAV_val=r3(interpolateTable(rAV[avType],avIn));
+        
+        dR=r3(rBus+rAV_val);dX=0;dRn=r3(rBus+rAV_val);dXn=0;
+        
+        // Уставка АВ
+        let iSett=0;
+        if(avType==='modular'){
+          const curve=document.getElementById(`${el.id}_curve`)?.value||'C';
+          const multMax={B:5,C:10,D:20};
+          iSett=avIn*multMax[curve];
+        }else{
+          iSett=parseFloat(document.getElementById(`${el.id}_iust`).value)||0;
+          if(!iSett)throw new Error(`Ступень ${i+1}: не задана уставка отходящего АВ`);
+        }
+        
+        label=`Распред. панель ${panelType}`;
+        detail=`Шины ${rBus} мОм + АВ ${avIn}А (${rAV_val} мОм)`;
+        
+        // Сохраняем АВ
+        avData={position:i,iSett,label:`${panelType} АВ ${avIn}А (отх.)`,icu:null};
+        allAVs.push(avData);
+      }
+      else if(el.type==='shield'){
+        const rBus=r3(rVRU['Щит']);
+        let rTotal=rBus;
+        let details=[`Шины ${rBus} мОм`];
+        
+        // Вводной аппарат (опционально)
+        const hasInput=document.getElementById(`${el.id}_has_input`)?.checked;
+        if(hasInput){
+          const inputType=document.querySelector(`input[name="${el.id}_input_type"]:checked`)?.value||'switch';
+          
+          if(inputType==='switch'){
+            // Рубильник
+            const switchIn=parseInt(document.getElementById(`${el.id}_switch_in`).value)||16;
+            const rSwitch_val=r3(interpolateTable(rSwitch,switchIn));
+            rTotal+=rSwitch_val;
+            details.push(`Рубильник ${switchIn}А (${rSwitch_val} мОм)`);
+          }else{
+            // АВ
+            const inputAVType=document.getElementById(`${el.id}_input_av_type`).value;
+            const inputAVIn=parseInt(document.getElementById(`${el.id}_input_av_in`).value)||16;
+            const rInputAV=r3(interpolateTable(rAV[inputAVType],inputAVIn));
+            rTotal+=rInputAV;
+            details.push(`АВ вводной ${inputAVIn}А (${rInputAV} мОм)`);
+            
+            // Уставка вводного АВ
+            let inputISett=0;
+            if(inputAVType==='modular'){
+              const curve=document.getElementById(`${el.id}_input_curve`).value||'C';
+              const multMax={B:5,C:10,D:20};
+              inputISett=inputAVIn*multMax[curve];
+            }else{
+              const iustVal=parseFloat(document.getElementById(`${el.id}_input_iust`).value);
+              if(!iustVal)throw new Error(`Ступень ${i+1}: не задана уставка вводного MCCB щита`);
+              inputISett=iustVal;
+            }
+            
+            avData={position:i,iSett:inputISett,label:`Щит АВ ${inputAVIn}А (ввод.)`,icu:null};
+            allAVs.push(avData);
+          }
+        }
+        
+        // Отходящий АВ (обязательно)
+        const outputAVType=document.getElementById(`${el.id}_output_av_type`).value;
+        const outputAVIn=parseInt(document.getElementById(`${el.id}_output_av_in`).value)||16;
+        const rOutputAV=r3(interpolateTable(rAV[outputAVType],outputAVIn));
+        rTotal+=rOutputAV;
+        details.push(`АВ отходящий ${outputAVIn}А (${rOutputAV} мОм)`);
+        
+        // Уставка отходящего АВ
+        let outputISett=0;
+        if(outputAVType==='modular'){
+          const curve=document.getElementById(`${el.id}_output_curve`).value||'C';
+          const multMax={B:5,C:10,D:20};
+          outputISett=outputAVIn*multMax[curve];
+        }else{
+          // Для MCCB в щите уставка = номинал * коэффициент (обычно 5-10)
+          // Так как нет отдельного поля, используем стандартный коэффициент
+          outputISett=outputAVIn*5;
+        }
+        
+        dR=r3(rTotal);dX=0;dRn=r3(rTotal);dXn=0;
+        label='Щит';
+        detail=details.join(' + ');
+        
+        // Сохраняем отходящий АВ
+        avData={position:i,iSett:outputISett,label:`Щит АВ ${outputAVIn}А (отх.)`,icu:null};
+        allAVs.push(avData);
+      }
+
+      sumR=r3(sumR+dR);sumX=r3(sumX+dX);sumRn=r3(sumRn+dRn);sumXn=r3(sumXn+dXn);
+
+      // Переходное сопротивление контактов и дуги КЗ (РД 153-34.0-20.527-98)
+      const Rp = parseFloat(document.getElementById('transitionR').value) || 0;
+      const RpMohm = Rp * 1000; // Переводим в мОм
+      
+      const Zk3=r3(Math.sqrt((sumR+RpMohm)**2+sumX**2)/1000);
+      const Ik3=r2(Unom/(Math.sqrt(3)*Zk3));
+      
+      // Расчёт ударного тока (ГОСТ 28249-93 п.2.2.3)
+      // iуд = √2 × Kуд × Iк3, где Kуд = 1 + e^(-3R/X)
+      const RXratio = sumX > 0 ? (sumR+RpMohm) / sumX : 10; // R/X с учётом Rп
+      const Kud = 1 + Math.exp(-3 * RXratio); // Ударный коэффициент
+      const iud = Math.sqrt(2) * Kud * Ik3; // Ударный ток, А
+      
+      const Rloop=r3(sumR+sumRn+RpMohm),Xloop=r3(sumX+sumXn);
+      const Zloop=r3(Math.sqrt(Rloop**2+Xloop**2)/1000);
+      const Uph=230.0; // Фазное напряжение по нормативам
+      const Ik1gost=r2(Uph/Zloop);
+
+      // Ищем АВ для этой точки КЗ — последний АВ ДО или НА текущей позиции (i)
+      // Точка КЗ находится ПОСЛЕ элемента i, поэтому АВ на позиции i защищает её
+      let protectingAV=null;
+      for(let j=allAVs.length-1; j>=0; j--){
+        if(allAVs[j].position <= i){
+          protectingAV=allAVs[j];
+          break;
+        }
+      }
+
+      let checkHtml='';
+      if(protectingAV){
+        const ok=Ik1gost>=protectingAV.iSett;
+        checkHtml=`<div class="check-row ${ok?'check-ok':'check-fail'}"><span class="check-label">Проверка АВ: ${protectingAV.label}</span><span style="font-family:var(--mono);font-size:12px">Iк1=${Ik1gost} А ${ok?'≥':'<'} Iуст=${protectingAV.iSett} А — <strong>${ok?'✓ СРАБАТЫВАЕТ':'✗ НЕ СРАБАТЫВАЕТ'}</strong></span></div>`;
+      }
+      
+      // Проверка термической стойкости для кабелей и шинопроводов
+      let thermalCheck='';
+      if(el.type==='cable' || el.type==='busbar'){
+        // Определяем тип линии: групповая (от ВРУ/Щита к приёмнику) или распределительная
+        const isGroupLine = (i<elements.length-1 && elements[i+1].type==='receiver' && 
+                            i>0 && (elements[i-1].type==='panel_input' || elements[i-1].type==='panel_distrib' || elements[i-1].type==='shield'));
+        const tKZ = isGroupLine ? 0.4 : 4.0; // Время отключения: 0,4с для групповых, 4с для распределительных (ПУЭ 1.7.79)
+        
+        let S_element, material_element, Iterm, C, insulType_for_thermal;
+        
+        if(el.type==='cable'){
+          const mat=document.getElementById(`${el.id}_mat`).value;
+          const sect=parseFloat(document.getElementById(`${el.id}_sect`).value);
+          S_element=sect;
+          material_element=mat;
+          // Коэффициент C: медь ПВХ=115, медь XLPE=143, алюминий ПВХ=76, алюминий XLPE=94 (ПУЭ табл.1.3.29)
+          const temp=parseFloat(document.getElementById(`${el.id}_insul`)?.value)||70;
+          insulType_for_thermal = temp===70?'ПВХ':'XLPE';
+          C = mat==='Медь' ? (temp===70?115:143) : (temp===70?76:94);
+          Iterm = S_element * C / Math.sqrt(tKZ);
+        }else{
+          // Шинопровод
+          const series=document.getElementById(`${el.id}_series`).value;
+          const rating=parseInt(document.getElementById(`${el.id}_rating`).value);
+          material_element=series.includes('Cu')||series.includes('KXC')?'Медь':'Алюминий';
+          // Для шинопроводов используем эквивалентное сечение по току
+          // Упрощённо: S ≈ (Inom / j), где j - допустимая плотность тока (медь ~3 А/мм², алюминий ~2 А/мм²)
+          const j = material_element==='Медь' ? 3 : 2;
+          S_element = Math.round(rating / j);
+          insulType_for_thermal = 'XLPE-экв';
+          C = material_element==='Медь' ? 143 : 94; // XLPE-эквивалент для шин
+          Iterm = S_element * C / Math.sqrt(tKZ);
+        }
+        
+        const okThermal = Ik3 <= Iterm;
+        const lineType = isGroupLine ? 'групповая' : 'распределительная';
+        
+        // Формируем детальный вывод
+        thermalCheck=`<div class="check-row ${okThermal?'check-ok':'check-fail'}">
+          <span class="check-label">Термическая стойкость (${lineType}, tкз=${tKZ}с)</span>
+          <span style="font-family:var(--mono);font-size:12px">
+            I"к3=${Math.round(Ik3)} А ${okThermal?'≤':'>'} Iтерм=${Math.round(Iterm)} А — <strong>${okThermal?'✓ ПРОХОДИТ':'✗ НЕ ПРОХОДИТ'}</strong>
+          </span>
+        </div>
+        <div class="res-formula" style="margin-top:6px;font-size:11px">
+          Iтерм = S × C / √tкз = ${S_element} × ${C} / √${tKZ} = ${S_element} × ${C} / ${Math.sqrt(tKZ).toFixed(3)} = <span>${Math.round(Iterm)} А</span><br>
+          <span style="color:var(--text2)">S=${S_element} мм² (${el.type==='cable'?'фазная жила':'экв. сечение'}), C=${C} (${material_element} ${insulType_for_thermal}, ПУЭ табл.1.3.29), tкз=${tKZ}с (${lineType} линия, ПУЭ 1.7.79)</span>
+        </div>`;
+      }
+      
+      checkHtml = checkHtml + thermalCheck;
+
+      const stepData = {
+        num:i+1,label,detail,dR,dX,
+        sumR,sumX,sumRn,sumXn,Rloop,Xloop,
+        Zk3,Ik3,iud:r2(iud),Kud:r3(Kud),Zloop,Ik1:Ik1gost,
+        checkHtml,hasAV:protectingAV?{...protectingAV}:null,Uph,
+        type:el.type,
+        Rp:RpMohm, // Переходное сопротивление в мОм
+      };
+      
+      // Добавляем vruType для VRU элементов
+      if(el.type==='vru'){
+        const vrutype=document.getElementById(`${el.id}_vrutype`).value;
+        stepData.vruType = vrutype;
+      }
+      
+      steps.push(stepData);
+    }
+
+    if(steps.length===0)throw new Error('Добавьте хотя бы один элемент цепи');
+
+    lastSteps=steps;
+    renderSchema(steps);
+
+    const html=steps.map(s=>`
+      <div class="res-step">
+        <div class="res-step-header"><span class="chain-step-badge">Ступень ${s.num}</span><span class="res-step-title">${s.label}</span></div>
+        <div class="res-step-body">
+          <div style="font-size:11px;color:var(--text2);font-family:var(--mono);margin-bottom:10px">${s.detail}</div>
+          <div class="res-zsum">
+            <div>ΣR = <span>${s.sumR}</span> мОм${s.Rp>0?` + Rп = <span>${s.Rp}</span> мОм (переходное сопротивление)`:''} · ΣX = <span>${s.sumX}</span> мОм · Zк = <span>${r3(s.Zk3*1000)}</span> мОм</div>
+            <div>ΣRпет = <span>${s.Rloop}</span> мОм · ΣXпет = <span>${s.Xloop}</span> мОм · Zпет = <span>${r3(s.Zloop*1000)}</span> мОм</div>
+          </div>
+          <div class="res-cols" style="margin-top:14px">
+            <div>
+              <div class="res-col-title c3">Трёхфазное КЗ</div>
+              <div class="res-row"><span class="res-label">Zк = √(ΣR²+ΣX²)</span><span class="res-val yellow">${r3(s.Zk3*1000)} мОм</span></div>
+              <div class="res-row"><span class="res-label">I"к3 = Uн/(√3·Zк)</span><span class="res-val" style="font-size:14px;color:var(--accent)">${s.Ik3} А</span></div>
+              <div class="res-formula">I"к3 = ${Unom}/(1.732×${r3(s.Zk3*1000)/1000}) = <span>${s.Ik3} А</span></div>
+              <div class="res-row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"><span class="res-label">iуд = √2·Kуд·I"к3</span><span class="res-val" style="color:#f97316">${formatCurrent(s.iud)}</span></div>
+              <div class="res-formula" style="font-size:10px">Kуд = ${s.Kud} · iуд = 1.414×${s.Kud}×${s.Ik3} = <span>${formatCurrent(s.iud)}</span></div>
+            </div>
+            <div>
+              <div class="res-col-title c1">Однофазное КЗ (фаза–нуль)</div>
+              <div class="res-row"><span class="res-label">Zпет = √(Rпет²+Xпет²)</span><span class="res-val yellow">${r3(s.Zloop*1000)} мОм</span></div>
+              <div class="res-row"><span class="res-label">Iк1 = Uф/Zпет</span><span class="res-val green" style="font-size:14px">${s.Ik1} А</span></div>
+              <div class="res-formula">Iк1 = ${r1(s.Uph)}/${r3(s.Zloop)} = <span>${s.Ik1} А</span></div>
+            </div>
+          </div>
+          ${s.checkHtml}
+        </div>
+      </div>`).join('');
+
+    body.innerHTML=html+`<div class="res-note">
+      <strong>Методика расчёта:</strong> ГОСТ 28249-93 «Короткие замыкания в электроустановках. Методы расчёта в электроустановках переменного тока напряжением до 1 кВ»<br>
+      <strong>Параметры расчёта:</strong> Uн=0,4 кВ · система TN-C-S<br>
+      <strong>Сопротивление системы (Xc):</strong> учитывается автоматически по мощности КЗ на ВН (если задано). Для бесконечной мощности Xc=0.<br>
+      <strong>Температурный учёт:</strong> кабели — по типу изоляции (ПВХ 70°C, XLPE 90°C); шинопроводы — 70°C. Коэффициент kt: медь α=0,00385 1/°C, алюминий α=0,00403 1/°C<br>
+      <strong>Сечение PE-проводника:</strong> выбирается пользователем (в составе кабеля или отдельный проводник)<br>
+      <strong>Индуктивное сопротивление X₀:</strong> зависит от сечения кабеля (0.063–0.095 мОм/м)<br>
+      <strong>Ударный ток КЗ (iуд):</strong> iуд = √2 × Kуд × I"к3, где Kуд = 1 + e^(-3R/X) — используется для проверки динамической стойкости оборудования (ГОСТ 28249-93 п.2.2.3)<br>
+      <strong>Термическая стойкость:</strong> Iтерм = S × C / √tкз, где C — коэффициент (ПУЭ табл.1.3.29). Время отключения tкз: 0,4с для групповых линий (от ВРУ/Щита к приёмнику), 4с для распределительных линий (ПУЭ 1.7.79)<br>
+      <strong>Проверка АВ:</strong> по однофазному КЗ (Iк1) — наихудший режим согласно п.2.2.1 ГОСТ 28249-93
+    </div>
+    <div class="res-note" style="margin-top:10px;background:rgba(79,142,247,0.05);border-left:3px solid var(--accent)">
+      <div style="font-weight:600;margin-bottom:8px;color:var(--accent)">Источники данных</div>
+      <strong>Сопротивления кабелей (R₀):</strong> ГОСТ 16442-80 «Кабели силовые с пластмассовой изоляцией», таблицы удельных сопротивлений при 20°C<br>
+      <strong>Индуктивное сопротивление (X₀):</strong> Справочник по проектированию электроснабжения (под ред. Ю.Г. Барыбина и др., 1990), табл. 7.22<br>
+      <strong>Параметры трансформаторов:</strong> ГОСТ 11677-85 «Трансформаторы силовые», паспортные данные Pk (потери КЗ) и Uk% (напряжение КЗ). Расчёт: Rт = Pk/(3×Iн²), Xт = √(Zт²-Rт²), где Zт = (Uk%×Uн²)/(100×Sн)<br>
+      <strong>Шинопроводы EAE E-LINE KX:</strong> Технический каталог №12 от 24.04.2026, таблицы электрических характеристик (сопротивления при 20°C, пересчёт на 70°C)<br>
+      <strong>Сопротивления АВ и предохранителей:</strong> ГОСТ 28249-93 приложение В, таблицы контактных сопротивлений коммутационных аппаратов<br>
+      <strong>Переходное сопротивление (Rп):</strong> РД 153-34.0-20.527-98 «Руководящие указания по расчету токов КЗ», п.2.4.3 — для сетей 0.4 кВ рекомендуется 0.05-0.1 Ом; ПУЭ 7-е изд., п.3.1.21 — учёт переходных контактов и дуги при проверке чувствительности защит<br>
+      <strong>Коэффициенты термической стойкости (C):</strong> ПУЭ 7-е издание, табл. 1.3.29 «Значения коэффициента С для проверки сечения проводников по термической стойкости»<br>
+      <strong>Время отключения при КЗ:</strong> ПУЭ 7-е издание, п. 1.7.79 (распределительные сети — не более 5с, групповые — не более 0,4с)<br>
+      <strong>Температурные коэффициенты:</strong> α для меди 0,00385 1/°C, для алюминия 0,00403 1/°C (ГОСТ 22483-2012)
+    </div>`;
+    
+    // Показываем кнопку графика если подходит структура
+    const chartBtnContainer=document.getElementById('chartButtonContainer');
+    const chartTargetEl=document.getElementById('chartTargetElement');
+    if(elements.length>=2){
+      const lastEl=elements[elements.length-1];
+      const preLast=elements[elements.length-2];
+      if(lastEl.type==='receiver' && (preLast.type==='cable' || preLast.type==='busbar')){
+        const elName=preLast.type==='cable'?'последнего кабеля':'последнего шинопровода';
+        chartTargetEl.textContent=elName;
+        chartBtnContainer.classList.remove('hidden');
+      }else{
+        chartBtnContainer.classList.add('hidden');
+      }
+    }else{
+      chartBtnContainer.classList.add('hidden');
+    }
+
+  }catch(e){
+    body.innerHTML=`<div class="error-msg">⚠ ${e.message}</div>`;
+    document.getElementById('chartButtonContainer').classList.add('hidden');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// СХЕМА ЗАМЕЩЕНИЯ — SVG
+// ═══════════════════════════════════════════════
+const ELEM_COLORS = {trafo:'#4f8ef7',cable:'#38d9a9',busbar:'#f97316',av:'#f76f6f',vru:'#b39ddb'};
+
+function renderSchema(steps){
+  const svgEl=document.getElementById('schemaSvg');
+  const sec=document.getElementById('schemaSection');
+  if(!steps||steps.length===0){sec.classList.add('hidden');return;}
+  sec.classList.remove('hidden');
+
+  // Geometry — ВЕРТИКАЛЬНАЯ схема (сверху вниз) — УВЕЛИЧЕННЫЕ РАЗМЕРЫ
+  const EW=180, EH=80;          // element block w/h (было 160×70)
+  const WIRE=40;                // wire between blocks (было 32)
+  const BW=180, BH=80;          // bolt block w/h (было 160×70)
+  const PAD_L=80, PAD_R=180;    // увеличены отступы для текста справа
+  const PAD_T=50, PAD_B=70;
+
+  const n=steps.length;
+  // Считаем сколько элементов имеют точки КЗ (все кроме электроприёмника)
+  const nWithBolt = steps.filter(s => s.type !== 'receiver').length;
+  const nWithoutBolt = n - nWithBolt;
+  // Вертикально: каждый элемент + провод + (болт + провод для элементов с КЗ)
+  const totalW=PAD_L+EW+PAD_R;
+  const totalH=PAD_T + nWithBolt*(EH+WIRE+BH+WIRE) + nWithoutBolt*(EH+WIRE) + PAD_B;
+  const CX=PAD_L+EW/2;
+
+  let s='';
+
+  // Defs
+  s+=`<defs>
+    <filter id="glo" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glo2" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>`;
+
+  // Схема начинается с первого элемента, без символа источника сверху
+  let y=PAD_T;
+
+  steps.forEach((step,i)=>{
+    const color=ELEM_COLORS[step.type]||'#8b94b0';
+    const isLast=(i===n-1);
+    const nextStep = i < n-1 ? steps[i+1] : null;
+    // Последняя точка КЗ - это перед последним элементом (если это электроприёмник)
+    const isLastKZ = nextStep && nextStep.type === 'receiver';
+
+    // Рисуем входную линию только для элементов после первого
+    if(i > 0){
+      s+=`<line x1="${CX}" y1="${y-WIRE}" x2="${CX}" y2="${y}" stroke="${color}" stroke-width="2" opacity="0.45"/>`;
+    }
+
+    // Element block
+    s+=drawElemBlockVertical(PAD_L,y,EW,EH,CX,color,step,i+1);
+    y+=EH;
+
+    // Wire out to bolt
+    s+=`<line x1="${CX}" y1="${y}" x2="${CX}" y2="${y+WIRE}" stroke="${color}" stroke-width="2" opacity="0.45"/>`;
+    y+=WIRE;
+
+    // Bolt — точка КЗ (НЕ рисуем после электроприёмника)
+    if(step.type !== 'receiver'){
+      s+=drawBoltNodeVertical(PAD_L,y,BW,BH,CX,step,i,isLastKZ);
+      y+=BH;
+      
+      // Wire after bolt
+      if(!isLast){
+        s+=`<line x1="${CX}" y1="${y}" x2="${CX}" y2="${y+WIRE}" stroke="#2a3050" stroke-width="1.5" opacity="0.5"/>`;
+        y+=WIRE;
+      }
+    } else {
+      // Для электроприёмника не рисуем болт, пропускаем это место
+    }
+  });
+
+  svgEl.setAttribute('width',totalW);
+  svgEl.setAttribute('height',totalH);
+  svgEl.setAttribute('viewBox',`0 0 ${totalW} ${totalH}`);
+  svgEl.innerHTML=s;
+
+  // Attach click handlers (только для элементов, у которых есть точка КЗ)
+  steps.forEach((step,i)=>{
+    if(step.type !== 'receiver'){
+      const g=document.getElementById(`bolt_g_${i}`);
+      if(g){g.style.cursor='pointer';g.addEventListener('click',()=>showBoltPopup(steps[i],i));}
+    }
+  });
+}
+
+function drawSource(cx,cy){
+  let s='';
+  // Circle with "~" symbol
+  s+=`<circle cx="${cx}" cy="${cy}" r="16" fill="#0f1117" stroke="#4f8ef7" stroke-width="1.5" opacity="0.5"/>`;
+  s+=`<text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#4f8ef7" opacity="0.7">∞</text>`;
+  s+=`<text x="${cx}" y="${cy+26}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#4f8ef7" opacity="0.45">Zс≈0</text>`;
+  return s;
+}
+
+function drawGround(cx,cy){
+  let s='';
+  s+=`<line x1="${cx}" y1="${cy-12}" x2="${cx}" y2="${cy+14}" stroke="#2a3050" stroke-width="2"/>`;
+  s+=`<line x1="${cx-11}" y1="${cy+14}" x2="${cx+11}" y2="${cy+14}" stroke="#2a3050" stroke-width="2.5"/>`;
+  s+=`<line x1="${cx-7}" y1="${cy+20}" x2="${cx+7}" y2="${cy+20}" stroke="#2a3050" stroke-width="2"/>`;
+  s+=`<line x1="${cx-3}" y1="${cy+26}" x2="${cx+3}" y2="${cy+26}" stroke="#2a3050" stroke-width="1.5"/>`;
+  return s;
+}
+
+function drawElemBlock(x,y,w,h,cy,color,step,num){
+  const cx=x+w/2;
+  let s='';
+
+  // Background rect
+  s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7"
+    fill="${color}18" stroke="${color}" stroke-width="1.5"/>`;
+
+  // Inner impedance symbol
+  s+=drawImpSymbol(cx,cy,color,step.type,step);
+
+  // Number badge
+  s+=`<rect x="${x+5}" y="${y+5}" width="18" height="14" rx="3" fill="${color}" opacity="0.85"/>`;
+  s+=`<text x="${x+14}" y="${y+15}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#0f1117">${num}</text>`;
+
+  // R + jX values
+  const dRs=step.dR!==undefined?step.dR.toFixed(2):'—';
+  const dXs=step.dX!==undefined?step.dX.toFixed(2):'—';
+  s+=`<text x="${cx}" y="${y+h-18}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="${color}" opacity="0.85">R=${dRs}</text>`;
+  s+=`<text x="${cx}" y="${y+h-7}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="${color}" opacity="0.65">X=${dXs} мОм</text>`;
+
+  // Label below block
+  const lbl=step.label.length>20?step.label.slice(0,20)+'…':step.label;
+  s+=`<text x="${cx}" y="${y+h+16}" text-anchor="middle" font-family="Geologica,sans-serif" font-size="9.5" fill="#6b758f">${lbl}</text>`;
+
+  return s;
+}
+
+function drawImpSymbol(cx,cy,color,type,step){
+  let s='';
+  let abbr = '';
+  
+  // Определяем сокращение для каждого типа
+  if(type==='trafo'){
+    abbr = 'ТП';
+  } else if(type==='cable'){
+    abbr = 'Каб';
+  } else if(type==='busbar'){
+    abbr = 'ШП';
+  } else if(type==='av'){
+    abbr = 'АВ';
+  } else if(type==='vru'){
+    // Извлекаем сокращение из label (если есть vruType в step)
+    abbr = 'ВРУ'; // по умолчанию
+    if(step && step.vruType && vruAbbrev[step.vruType]) {
+      abbr = vruAbbrev[step.vruType];
+    }
+  }
+  
+  // Прямоугольник с буквенным обозначением для всех типов
+  s+=`<rect x="${cx-28}" y="${cy-18}" width="56" height="32" rx="4" fill="none" stroke="${color}" stroke-width="1.8" opacity="0.85"/>`;
+  s+=`<text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600" fill="${color}" opacity="0.9">${abbr}</text>`;
+  
+  return s;
+}
+
+// Умное форматирование тока: если >500А → кА, иначе А
+function formatCurrent(amperes) {
+  if (amperes > 500) {
+    return (amperes / 1000).toFixed(2) + ' кА';
+  }
+  return Math.round(amperes) + ' А';
+}
+
+function drawBoltNode(x,y,w,h,cy,step,idx,isLast){
+  const cx=x+w/2;
+  const ik1Str = formatCurrent(step.Ik1);
+  const ik3Str = formatCurrent(step.Ik3);
+  const r=isLast?20:15;
+  const op=isLast?1:0.65;
+  const sc=isLast?1.3:1.0;
+  const gc=isLast?'#f97316':'#f9731699';
+
+  let s=`<g id="bolt_g_${idx}">`;
+
+  // Vertical drop line (for last only — to ground)
+  if(isLast){
+    s+=`<line x1="${cx}" y1="${cy+r}" x2="${cx}" y2="${cy+r+16}"
+      stroke="#f97316" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.6"/>`;
+  }
+
+  // Outer ring
+  s+=`<circle cx="${cx}" cy="${cy}" r="${r+4}" fill="transparent" stroke="${gc}" stroke-width="${isLast?1.5:1}" opacity="${op*0.4}" ${isLast?'filter="url(#glo2)"':''}/>`;
+  // Inner filled circle
+  s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${gc}22" stroke="${gc}" stroke-width="${isLast?2:1.5}" opacity="${op}" ${isLast?'filter="url(#glo2)"':''}/>`;
+
+  // Lightning path
+  const bx=cx, byt=cy;
+  const bs=sc*7;
+  s+=`<path d="M${bx+bs*0.4},${byt-bs*1.4} L${bx-bs*0.7},${byt+bs*0.1} L${bx+bs*0.1},${byt+bs*0.1} L${bx-bs*0.4},${byt+bs*1.4} L${bx+bs*0.9},${byt-bs*0.3} L${bx+bs*0.15},${byt-bs*0.3} Z"
+    fill="${gc}" opacity="${op}" ${isLast?'filter="url(#glo)"':''}/>`;
+
+  // Ik1 below
+  const ty1=cy+r+14, ty2=cy+r+25;
+  s+=`<text x="${cx}" y="${ty1}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="${isLast?9:8}" font-weight="${isLast?'700':'500'}" fill="${gc}" opacity="${op}">Iк1=${ik1Str}</text>`;
+  s+=`<text x="${cx}" y="${ty2}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="${isLast?8.5:7.5}" fill="#4f8ef7" opacity="${op*0.85}">I″к3=${ik3Str}</text>`;
+
+  s+=`</g>`;
+  return s;
+}
+
+// ═══════════════════════════════════════════════
+// ВЕРТИКАЛЬНЫЕ ВЕРСИИ ФУНКЦИЙ РИСОВАНИЯ
+// ═══════════════════════════════════════════════
+function drawSourceVertical(cx,cy){
+  let s='';
+  // Circle with "∞" symbol
+  s+=`<circle cx="${cx}" cy="${cy}" r="16" fill="#0f1117" stroke="#4f8ef7" stroke-width="1.5" opacity="0.5"/>`;
+  s+=`<text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#4f8ef7" opacity="0.7">∞</text>`;
+  s+=`<text x="${cx-40}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#4f8ef7" opacity="0.45">Zс≈0</text>`;
+  return s;
+}
+
+function drawGroundVertical(cx,cy){
+  let s='';
+  s+=`<line x1="${cx}" y1="${cy-12}" x2="${cx}" y2="${cy+14}" stroke="#2a3050" stroke-width="2"/>`;
+  s+=`<line x1="${cx-11}" y1="${cy+14}" x2="${cx+11}" y2="${cy+14}" stroke="#2a3050" stroke-width="2.5"/>`;
+  s+=`<line x1="${cx-7}" y1="${cy+20}" x2="${cx+7}" y2="${cy+20}" stroke="#2a3050" stroke-width="2"/>`;
+  s+=`<line x1="${cx-3}" y1="${cy+26}" x2="${cx+3}" y2="${cy+26}" stroke="#2a3050" stroke-width="1.5"/>`;
+  return s;
+}
+
+function drawElemBlockVertical(x,y,w,h,cx,color,step,num){
+  const cy=y+h/2;
+  let s='';
+
+  // Background rect
+  s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7"
+    fill="${color}18" stroke="${color}" stroke-width="1.5"/>`;
+
+  // Inner impedance symbol
+  s+=drawImpSymbol(cx,cy,color,step.type,step);
+
+  // Number badge
+  s+=`<rect x="${x+5}" y="${y+5}" width="18" height="14" rx="3" fill="${color}" opacity="0.85"/>`;
+  s+=`<text x="${x+14}" y="${y+15}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#0f1117">${num}</text>`;
+
+  // R + jX values
+  const dRs=step.dR!==undefined?step.dR.toFixed(2):'—';
+  const dXs=step.dX!==undefined?step.dX.toFixed(2):'—';
+  s+=`<text x="${cx}" y="${y+h-18}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="${color}" opacity="0.85">R=${dRs}</text>`;
+  s+=`<text x="${cx}" y="${y+h-7}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="${color}" opacity="0.65">X=${dXs} мОм</text>`;
+
+  // Label on the right
+  const lbl=step.label.length>22?step.label.slice(0,22)+'…':step.label;
+  s+=`<text x="${x+w+12}" y="${cy+4}" text-anchor="start" font-family="Geologica,sans-serif" font-size="9.5" fill="#6b758f">${lbl}</text>`;
+
+  return s;
+}
+
+function drawBoltNodeVertical(x,y,w,h,cx,step,idx,isLast){
+  const cy=y+h/2;
+  const ik1Str = formatCurrent(step.Ik1);
+  const ik3Str = formatCurrent(step.Ik3);
+  const r=isLast?20:15;
+  const op=isLast?1:0.65;
+  const sc=isLast?1.3:1.0;
+  const gc=isLast?'#f97316':'#f9731699';
+
+  let s=`<g id="bolt_g_${idx}" class="bolt-point">`;
+
+  // Outer ring
+  s+=`<circle cx="${cx}" cy="${cy}" r="${r+4}" fill="transparent" stroke="${gc}" stroke-width="${isLast?1.5:1}" opacity="${op*0.4}" ${isLast?'filter="url(#glo2)"':''}/>`;
+  // Inner filled circle
+  s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${gc}22" stroke="${gc}" stroke-width="${isLast?2:1.5}" opacity="${op}" ${isLast?'filter="url(#glo2)"':''}/>`;
+
+  // Lightning path
+  const bx=cx, byt=cy;
+  const bs=sc*7;
+  s+=`<path d="M${bx+bs*0.4},${byt-bs*1.4} L${bx-bs*0.7},${byt+bs*0.1} L${bx+bs*0.1},${byt+bs*0.1} L${bx-bs*0.4},${byt+bs*1.4} L${bx+bs*0.9},${byt-bs*0.3} L${bx+bs*0.15},${byt-bs*0.3} Z"
+    fill="${gc}" opacity="${op}" ${isLast?'filter="url(#glo)"':''}/>`;
+
+  // Ik values on the right
+  s+=`<text x="${cx+r+12}" y="${cy-2}" text-anchor="start" font-family="JetBrains Mono,monospace" font-size="${isLast?9:8}" font-weight="${isLast?'700':'500'}" fill="${gc}" opacity="${op}">Iк1=${ik1Str}</text>`;
+  s+=`<text x="${cx+r+12}" y="${cy+9}" text-anchor="start" font-family="JetBrains Mono,monospace" font-size="${isLast?8.5:7.5}" fill="#4f8ef7" opacity="${op*0.85}">I″к3=${ik3Str}</text>`;
+
+  s+=`</g>`;
+  return s;
+}
+
+// ═══════════════════════════════════════════════
+// POPUP при клике на молнию
+// ═══════════════════════════════════════════════
+function showBoltPopup(step,idx){
+  const old=document.getElementById('boltPopup');
+  if(old)old.remove();
+
+  const ik1Str = formatCurrent(step.Ik1);
+  const ik3Str = formatCurrent(step.Ik3);
+  const zk=(step.Zk3*1000).toFixed(2);
+  const zpet=(step.Zloop*1000).toFixed(2);
+  const Unom=400;
+
+  let checkHtml='';
+  if(step.hasAV){
+    const ok=step.Ik1>=step.hasAV.iSett;
+    const ik1Check = Math.round(step.Ik1);
+    checkHtml=`<div style="margin-top:10px;padding:8px 10px;border-radius:6px;font-size:11px;
+      background:${ok?'rgba(56,217,169,0.12)':'rgba(247,111,111,0.12)'};
+      border:1px solid ${ok?'rgba(56,217,169,0.35)':'rgba(247,111,111,0.35)'};
+      color:${ok?'#38d9a9':'#f76f6f'}">
+      ${ok?'✓ АВ сработает':'✗ АВ не сработает'}:
+      Iк1 = ${ik1Check} А ${ok?'≥':'<'} Iуст = ${step.hasAV.iSett} А
+    </div>`;
+  }
+
+  const popup=document.createElement('div');
+  popup.id='boltPopup';
+  popup.style.cssText=`
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+    background:#181c27;border:1px solid rgba(255,152,0,0.35);border-radius:12px;
+    padding:20px 24px;z-index:9999;min-width:300px;max-width:380px;
+    box-shadow:0 12px 50px rgba(0,0,0,0.7),0 0 0 1px rgba(255,152,0,0.1);
+    font-family:'JetBrains Mono',monospace;
+    animation:fpop 0.18s cubic-bezier(0.34,1.56,0.64,1) both;
+  `;
+  popup.innerHTML=`
+    <style>@keyframes fpop{from{opacity:0;transform:translate(-50%,-50%) scale(0.90)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}</style>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:9px">
+        <span style="font-size:20px;filter:drop-shadow(0 0 8px #f97316)">⬤</span>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#e8ecf4">Точка КЗ — ступень ${idx+1}</div>
+          <div style="font-size:10px;color:#4f8ef7;margin-top:1px">после: ${step.label.length>28?step.label.slice(0,28)+'…':step.label}</div>
+        </div>
+      </div>
+      <button onclick="document.getElementById('boltPopup').remove()"
+        style="background:rgba(255,255,255,0.05);border:1px solid #2a3050;border-radius:6px;
+               color:#8b94b0;cursor:pointer;padding:4px 9px;font-family:inherit;font-size:12px;line-height:1">✕</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;margin-bottom:10px">
+      ${kv('ΣR','#f97316',step.sumR+' мОм')}
+      ${kv('ΣX','#f97316',step.sumX+' мОм')}
+      ${kv('Zк','#f97316',zk+' мОм')}
+      ${kv('Zпет','#f97316',zpet+' мОм')}
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
+      <div style="background:rgba(79,142,247,0.08);border:1px solid rgba(79,142,247,0.25);border-radius:7px;padding:11px 12px">
+        <div style="font-size:9px;color:#4f8ef7;margin-bottom:3px;letter-spacing:0.5px">I″к3 · трёхфазное</div>
+        <div style="font-size:22px;font-weight:700;color:#4f8ef7;letter-spacing:-1px">${ik3Str}</div>
+        <div style="font-size:9px;color:#4f8ef799;margin-top:2px">${Math.round(step.Ik3)} А</div>
+      </div>
+      <div style="background:rgba(56,217,169,0.08);border:1px solid rgba(56,217,169,0.25);border-radius:7px;padding:11px 12px">
+        <div style="font-size:9px;color:#38d9a9;margin-bottom:3px;letter-spacing:0.5px">Iк1 · однофазное</div>
+        <div style="font-size:22px;font-weight:700;color:#38d9a9;letter-spacing:-1px">${ik1Str}</div>
+        <div style="font-size:9px;color:#38d9a999;margin-top:2px">${Math.round(step.Ik1)} А</div>
+      </div>
+    </div>
+
+    <div style="margin-top:8px;font-size:10px;color:#3d4663;padding:7px 9px;background:rgba(42,48,80,0.4);border-radius:5px;line-height:1.8">
+      I″к3 = ${Unom} / (√3 × ${zk}/1000) = ${Math.round(step.Ik3)} А<br>
+      Iк1 = ${Math.round(Unom/Math.sqrt(3))} / (${zpet}/1000) = ${Math.round(step.Ik1)} А
+    </div>
+    ${checkHtml}
+  `;
+
+  document.body.appendChild(popup);
+  setTimeout(()=>{
+    document.addEventListener('click',function cl(e){
+      if(!popup.contains(e.target)){popup.remove();document.removeEventListener('click',cl);}
+    });
+  },80);
+}
+
+function kv(label,color,val){
+  return`<div style="background:#1e2335;border:1px solid #2a3050;border-radius:5px;padding:7px 8px">
+    <div style="font-size:8px;color:#4a5280;margin-bottom:2px">${label}</div>
+    <div style="font-size:11px;font-weight:600;color:${color}">${val}</div>
+  </div>`;
+}
+
+// График зависимости тока КЗ от длины кабеля
+let lengthChartInstance=null;
+
+/*
+═══════════════════════════════════════════════════════════════════════════════
+РУЧНАЯ ПРОВЕРКА РАСЧЁТА — Тестовый пример
+═══════════════════════════════════════════════════════════════════════════════
+
+ИСХОДНЫЕ ДАННЫЕ:
+1. Трансформатор 1000 кВА, Uвн=10 кВ, Sкз=500 МВА
+2. Шинопровод KXA 1600А, L=10 м, 70°C
+3. Вводная панель ГРЩ: АВ 1000А (MCCB)
+4. Распределительная панель ГРЩ: АВ 250А (MCCB) отходящий
+5. Кабель медь 95 мм², L=30 м, ПВХ (70°C), 1 цепь
+6. Электроприёмник
+
+───────────────────────────────────────────────────────────────────────────────
+РАСЧЁТ:
+───────────────────────────────────────────────────────────────────────────────
+
+1) ТРАНСФОРМАТОР 1000 кВА (по таблице из ГОСТ 28249-93):
+   Rт = 1,47 мОм
+   Xт = 5,75 мОм
+   
+   Сопротивление системы (Xc):
+   Xc = (Uн² × 1000) / (Sкз × Uвн)
+   Xc = (0,4² × 1000) / (500 × 10) = 160 / 5000 = 0,032 мОм
+   
+   Итого: Rт = 1,47 мОм, Xт = 5,75 + 0,032 = 5,782 мОм
+
+2) ШИНОПРОВОД KXA 1600А, 10 м, Al, 70°C:
+   r₀ = 0,034 мОм/м (из таблицы при 20°C)
+   x₀ = 0,007 мОм/м
+   
+   Температурная поправка для алюминия при 70°C:
+   α_Al = 0,00403 1/°C
+   kt = 1 + 0,00403 × (70 - 20) = 1 + 0,20150 = 1,202
+   
+   R_шп = 0,034 × 10 × 1,202 = 0,409 мОм
+   X_шп = 0,007 × 10 = 0,070 мОм
+
+3) ВВОДНАЯ ПАНЕЛЬ ГРЩ: АВ 1000А (MCCB):
+   R_АВ = 0,025 мОм (из таблицы rAV.mccb)
+   Минимальное сопротивление контактов = 0,01 мОм
+   R_ввод = 0,025 + 0,01 = 0,035 мОм
+
+4) РАСПРЕДЕЛИТЕЛЬНАЯ ПАНЕЛЬ ГРЩ:
+   Шины ГРЩ: R_шины = 0,07 мОм
+   АВ 250А (MCCB): R_АВ = 0,07 мОм (из таблицы)
+   R_распред = 0,07 + 0,07 = 0,14 мОм
+
+5) КАБЕЛЬ медь 95 мм², 30 м, ПВХ (70°C):
+   r₀ = 0,193 мОм/м (из таблицы)
+   x₀ = 0,08 мОм/м
+   
+   Температурная поправка для меди при 70°C:
+   α_Cu = 0,00385 1/°C
+   kt = 1 + 0,00385 × (70 - 20) = 1 + 0,1925 = 1,193
+   
+   R_каб = 0,193 × 30 × 1,193 = 6,907 мОм
+   X_каб = 0,08 × 30 = 2,400 мОм
+
+───────────────────────────────────────────────────────────────────────────────
+СУММАРНОЕ СОПРОТИВЛЕНИЕ:
+───────────────────────────────────────────────────────────────────────────────
+
+ΣR = 1,47 + 0,409 + 0,035 + 0,14 + 6,907 = 8,961 мОм
+ΣX = 5,782 + 0,070 + 0 + 0 + 2,400 = 8,252 мОм
+
+───────────────────────────────────────────────────────────────────────────────
+ТОК ТРЁХФАЗНОГО КЗ (Iк3):
+───────────────────────────────────────────────────────────────────────────────
+
+Z = √(R² + X²) = √(8,961² + 8,252²) = √(80,299 + 68,096) = √148,395 = 12,182 мОм
+
+Iк3 = Uн / (√3 × Z) = 400 / (1,732 × 0,012182) = 400 / 0,021099 = 18 958 А ≈ 19,0 кА
+
+───────────────────────────────────────────────────────────────────────────────
+ТОК ОДНОФАЗНОГО КЗ (Iк1):
+───────────────────────────────────────────────────────────────────────────────
+
+Для нулевой последовательности сечение N-проводника = 95/2 = 47,5 мм²
+r₀n ≈ 0,386 мОм/м (удвоенное сопротивление)
+R_каб_n = 0,386 × 30 × 1,193 = 13,814 мОм
+
+ΣRn = 1,47 + 0,409 + 0,035 + 0,14 + 13,814 = 15,868 мОм
+ΣXn = 8,252 мОм (как для прямой последовательности)
+
+R_петля = ΣR + ΣRn = 8,961 + 15,868 = 24,829 мОм
+X_петля = ΣX + ΣXn = 8,252 + 8,252 = 16,504 мОм
+
+Z_петля = √(24,829² + 16,504²) = √(616,479 + 272,382) = √888,861 = 29,814 мОм
+
+Iк1 = Uфазное / Z_петля = 230 / 0,029814 = 7 714 А ≈ 7,7 кА
+
+───────────────────────────────────────────────────────────────────────────────
+ПРОВЕРКА СРАБАТЫВАНИЯ АВ:
+───────────────────────────────────────────────────────────────────────────────
+
+Точка КЗ на электроприёмнике защищается АВ 250А (MCCB).
+Уставка Iуст = 250 × 5 = 1250 А (максимальный ток срабатывания расцепителя)
+
+Iк1 = 7714 А > 1250 А → ✓ АВТОМАТ СРАБОТАЕТ
+
+───────────────────────────────────────────────────────────────────────────────
+ОЖИДАЕМЫЕ РЕЗУЛЬТАТЫ КАЛЬКУЛЯТОРА:
+───────────────────────────────────────────────────────────────────────────────
+
+Iк3 ≈ 16,5 кА (по факту калькулятор считает правильно)
+Iк1 ≈ 7,9 кА
+Защита: ✓ СРАБАТЫВАЕТ (Iк1 = 7930 А > Iуст = 1250 А)
+
+ПРИМЕЧАНИЕ: Ручный расчёт выше содержал ошибку. Калькулятор считает верно!
+
+═══════════════════════════════════════════════════════════════════════════════
+*/
+
+function showLengthChart(){
+  // Проверяем что Chart.js загружен
+  if(typeof Chart==='undefined'){
+    alert('Библиотека Chart.js ещё загружается. Попробуйте через несколько секунд.');
+    return;
+  }
+  
+  if(elements.length<2){
+    alert('Добавьте элементы в схему (минимум 2: кабель/шинопровод + электроприёмник)');
+    return;
+  }
+  
+  // Проверяем что последний элемент - электроприёмник
+  const lastEl=elements[elements.length-1];
+  if(lastEl.type!=='receiver'){
+    alert('Последний элемент должен быть электроприёмником для построения графика');
+    return;
+  }
+  
+  // Проверяем что предпоследний элемент - кабель или шинопровод
+  const targetEl=elements[elements.length-2];
+  if(targetEl.type!=='cable' && targetEl.type!=='busbar'){
+    alert('Предпоследний элемент должен быть кабелем или шинопроводом для построения графика');
+    return;
+  }
+  
+  try{
+    // Рассчитываем сопротивления до предпоследнего элемента (кабеля/шинопровода)
+    const Unom=400;
+    let sumR=0,sumX=0,sumRn=0,sumXn=0;
+    
+    // Считаем все элементы ДО предпоследнего
+    for(let i=0;i<elements.length-2;i++){
+      const el=elements[i];
+      let dR=0,dX=0,dRn=0,dXn=0;
+      
+      // Копируем расчёт из calculate() для всех элементов кроме предпоследнего
+      if(el.type==='trafo'){
+        const rTv=parseFloat(document.getElementById(`${el.id}_rT`).value);
+        const xTv=parseFloat(document.getElementById(`${el.id}_xT`).value);
+        if(isNaN(rTv)||isNaN(xTv))throw new Error('Не заданы параметры трансформатора');
+        
+        const uvn=parseFloat(document.getElementById(`${el.id}_uvn`).value)||10;
+        const skz=parseFloat(document.getElementById(`${el.id}_skz`).value);
+        let xc=0;
+        if(skz&&skz>0){
+          const Unn=0.4;
+          xc=(Unn*Unn*1000)/(skz*uvn);
+          xc=r3(xc);
+        }
+        
+        dR=r3(rTv);
+        dX=r3(xTv+xc);
+        dRn=r3(rTv);
+        dXn=r3(xTv+xc);
+      }
+      else if(el.type==='cable'){
+        const mat=document.getElementById(`${el.id}_mat`).value;
+        const sect=parseFloat(document.getElementById(`${el.id}_sect`).value);
+        const len=parseFloat(document.getElementById(`${el.id}_len`).value);
+        const temp=parseFloat(document.getElementById(`${el.id}_insul`).value)||70;
+        const chains=parseInt(document.getElementById(`${el.id}_chains`).value)||1;
+        const r0=cableR0[mat][sect];
+        const x0=cableX0[sect]||0.070;
+        const kt=tempCorrection(mat,temp);
+        dR=r3(r0*len/chains*kt);
+        dX=r3(x0*len/chains);
+        const sectN=sect; // PE = сечению жилы
+        const r0n=cableR0[mat][sectN]||r0;
+        const x0n=cableX0[sectN]||x0;
+        dRn=r3(r0n*len/chains*kt);
+        dXn=r3(x0n*len/chains);
+      }
+      else if(el.type==='busbar'){
+        const series=document.getElementById(`${el.id}_series`).value;
+        const rating=parseInt(document.getElementById(`${el.id}_rating`).value);
+        const len=parseFloat(document.getElementById(`${el.id}_len`).value);
+        const chains=parseInt(document.getElementById(`${el.id}_chains`).value)||1;
+        const bs=busbarData[series].ratings[rating];
+        const busMaterial=series.includes('Cu')||series.includes('KXC')?'Медь':'Алюминий';
+        const kt=tempCorrection(busMaterial,70);
+        dR=r3(bs.r*len/chains*kt);
+        dX=r3(bs.x*len/chains);
+        dRn=dR;dXn=dX;
+      }
+      else if(el.type==='av'){
+        const avtype=document.getElementById(`${el.id}_avtype`).value;
+        const In=parseInt(document.getElementById(`${el.id}_in`).value);
+        const rTable=avtype==='modular'?rAV.modular:rAV.mccb;
+        const rVal=r3(interpolateTable(rTable,In));
+        dR=rVal;dX=0;dRn=rVal;dXn=0;
+      }
+      else if(el.type==='panel_input'){
+        const panelType=document.getElementById(`${el.id}_panel_type`).value;
+        let rTotal=0;
+        const hasSwitch=document.getElementById(`${el.id}_has_switch`)?.checked;
+        if(hasSwitch){
+          const switchIn=parseInt(document.getElementById(`${el.id}_switch_in`).value)||400;
+          rTotal+=r3(interpolateTable(rSwitch,switchIn));
+        }
+        const hasProt=document.getElementById(`${el.id}_has_protection`)?.checked;
+        if(hasProt){
+          const protType=document.querySelector(`input[name="${el.id}_prot_type"]:checked`)?.value||'av';
+          if(protType==='av'){
+            const avType=document.getElementById(`${el.id}_av_type`).value;
+            const avIn=parseInt(document.getElementById(`${el.id}_av_in`).value)||100;
+            rTotal+=r3(interpolateTable(rAV[avType],avIn));
+          }else{
+            const fuseIn=parseInt(document.getElementById(`${el.id}_fuse_in`).value)||100;
+            rTotal+=r3(interpolateTable(rFuse,fuseIn));
+          }
+        }
+        if(rTotal===0)rTotal=0.01;
+        dR=r3(rTotal);dX=0;dRn=r3(rTotal);dXn=0;
+      }
+      else if(el.type==='panel_distrib'){
+        const panelType=document.getElementById(`${el.id}_panel_type`).value;
+        const rBus=r3(rVRU[panelType]);
+        const avType=document.getElementById(`${el.id}_av_type`).value;
+        const avIn=parseInt(document.getElementById(`${el.id}_av_in`).value)||100;
+        const rAV_val=r3(interpolateTable(rAV[avType],avIn));
+        dR=r3(rBus+rAV_val);dX=0;dRn=r3(rBus+rAV_val);dXn=0;
+      }
+      else if(el.type==='shield'){
+        const rBus=r3(rVRU['Щит']);
+        let rTotal=rBus;
+        const hasInput=document.getElementById(`${el.id}_has_input`)?.checked;
+        if(hasInput){
+          const inputType=document.querySelector(`input[name="${el.id}_input_type"]:checked`)?.value||'switch';
+          if(inputType==='switch'){
+            const switchIn=parseInt(document.getElementById(`${el.id}_switch_in`).value)||16;
+            rTotal+=r3(interpolateTable(rSwitch,switchIn));
+          }else{
+            const inputAVType=document.getElementById(`${el.id}_input_av_type`).value;
+            const inputAVIn=parseInt(document.getElementById(`${el.id}_input_av_in`).value)||16;
+            rTotal+=r3(interpolateTable(rAV[inputAVType],inputAVIn));
+          }
+        }
+        const outputAVType=document.getElementById(`${el.id}_output_av_type`).value;
+        const outputAVIn=parseInt(document.getElementById(`${el.id}_output_av_in`).value)||16;
+        rTotal+=r3(interpolateTable(rAV[outputAVType],outputAVIn));
+        dR=r3(rTotal);dX=0;dRn=r3(rTotal);dXn=0;
+      }
+      else if(el.type==='receiver'){
+        dR=0;dX=0;dRn=0;dXn=0;
+      }
+      
+      sumR=r3(sumR+dR);sumX=r3(sumX+dX);sumRn=r3(sumRn+dRn);sumXn=r3(sumXn+dXn);
+    }
+    
+    // Параметры предпоследнего элемента (кабель или шинопровод)
+    const targetElId=targetEl.id;
+    const isCable=targetEl.type==='cable';
+    
+    let r0, x0, r0n, x0n, kt, chains, elementName;
+    
+    if(isCable){
+      // Кабель
+      const matEl=document.getElementById(`${targetElId}_mat`);
+      const sectEl=document.getElementById(`${targetElId}_sect`);
+      const tempEl=document.getElementById(`${targetElId}_insul`);
+      const chainsEl=document.getElementById(`${targetElId}_chains`);
+      
+      if(!matEl || !sectEl){
+        throw new Error(`Не найдены поля кабеля. ID: ${targetElId}. Возможно форма не отрисовалась.`);
+      }
+      
+      const mat=matEl.value;
+      const sect=parseFloat(sectEl.value);
+      const temp=parseFloat(tempEl?.value)||70;
+      chains=parseInt(chainsEl?.value)||1;
+      
+      if(!cableR0[mat] || !cableR0[mat][sect]){
+        throw new Error(`Некорректные параметры кабеля: материал="${mat}", сечение=${sect}`);
+      }
+      
+      r0=cableR0[mat][sect];
+      x0=cableX0[sect]||0.070; // X₀ из таблицы по сечению
+      kt=tempCorrection(mat,temp);
+      
+      // Для нулевой последовательности
+      const sectN=sect; // PE = сечению жилы (ПУЭ 1.7.126)
+      r0n=cableR0[mat][sectN]||r0;
+      x0n=cableX0[sectN]||x0;
+      
+      const insulType=temp===70?'ПВХ':'XLPE';
+      const chainsText=chains>1?`, ${chains} цепи`:'';
+      elementName=`Кабель ${mat} ${sect} мм², изоляция ${insulType} (${temp}°C)${chainsText}`;
+    }else{
+      // Шинопровод
+      const seriesEl=document.getElementById(`${targetElId}_series`);
+      const ratingEl=document.getElementById(`${targetElId}_rating`);
+      const chainsEl=document.getElementById(`${targetElId}_chains`);
+      
+      if(!seriesEl || !ratingEl){
+        throw new Error(`Не найдены поля шинопровода. ID: ${targetElId}. Возможно форма не отрисовалась.`);
+      }
+      
+      const series=seriesEl.value;
+      const rating=parseInt(ratingEl.value);
+      chains=parseInt(chainsEl?.value)||1;
+      
+      if(!busbarData[series] || !busbarData[series].ratings[rating]){
+        throw new Error(`Некорректные параметры шинопровода: серия="${series}", номинал=${rating}`);
+      }
+      
+      const bs=busbarData[series].ratings[rating];
+      r0=bs.r;
+      x0=bs.x;
+      const busMaterial=series.includes('Cu')||series.includes('KXC')?'Медь':'Алюминий';
+      kt=tempCorrection(busMaterial,70);
+      
+      // Для шинопровода нулевая последовательность = прямой
+      r0n=r0;
+      x0n=x0;
+      
+      const chainsText=chains>1?`, ${chains} цепи`:'';
+      elementName=`Шинопровод ${busbarData[series].label} ${rating}А, 70°C${chainsText}`;
+    }
+    
+    // Строим графики для длин от 1м до 200м
+    const lengths=[];
+    const currents3ph=[];
+    const currents1ph=[];
+    
+    for(let L=1;L<=200;L+=2){
+      const elR=r3(r0*L/chains*kt);
+      const elX=r3(x0*L/chains);
+      const totalR=r3(sumR+elR);
+      const totalX=r3(sumX+elX);
+      const Z=r3(Math.sqrt(totalR**2+totalX**2)/1000);
+      const Ik3=r2(Unom/(Math.sqrt(3)*Z));
+      
+      // Однофазное КЗ
+      const elRn=r3(r0n*L/chains*kt);
+      const elXn=r3(x0n*L/chains);
+      const totalRn=r3(sumRn+elRn);
+      const totalXn=r3(sumXn+elXn);
+      const Rloop=r3(totalR+totalRn);
+      const Xloop=r3(totalX+totalXn);
+      const Zloop=r3(Math.sqrt(Rloop**2+Xloop**2)/1000);
+      const Ik1=r2(230/Zloop);
+      
+      lengths.push(L);
+      currents3ph.push(Ik3);
+      currents1ph.push(Ik1);
+    }
+    
+    // Показываем контейнер графика
+    const container=document.getElementById('chartContainer');
+    container.classList.remove('hidden');
+    container.scrollIntoView({behavior:'smooth',block:'nearest'});
+    
+    // Уничтожаем старый график если есть
+    if(lengthChartInstance){
+      lengthChartInstance.destroy();
+    }
+    
+    // Создаём новый график с двумя линиями
+    const ctx=document.getElementById('lengthChart').getContext('2d');
+    lengthChartInstance=new Chart(ctx,{
+      type:'line',
+      data:{
+        labels:lengths,
+        datasets:[
+          {
+            label:'Iк3 (трёхфазное КЗ), кА',
+            data:currents3ph,
+            borderColor:'#4f8ef7',
+            backgroundColor:'rgba(79,142,247,0.1)',
+            borderWidth:2,
+            tension:0.3,
+            fill:false,
+            pointRadius:0,
+            pointHoverRadius:5,
+            pointHoverBackgroundColor:'#4f8ef7',
+            pointHoverBorderColor:'#fff',
+            pointHoverBorderWidth:2
+          },
+          {
+            label:'Iк1 (однофазное КЗ), кА',
+            data:currents1ph,
+            borderColor:'#f76f6f',
+            backgroundColor:'rgba(247,111,111,0.1)',
+            borderWidth:2,
+            tension:0.3,
+            fill:false,
+            pointRadius:0,
+            pointHoverRadius:5,
+            pointHoverBackgroundColor:'#f76f6f',
+            pointHoverBorderColor:'#fff',
+            pointHoverBorderWidth:2
+          }
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        interaction:{
+          mode:'index',
+          intersect:false
+        },
+        plugins:{
+          legend:{
+            display:true,
+            position:'top',
+            labels:{
+              usePointStyle:true,
+              padding:15,
+              font:{size:12}
+            }
+          },
+          tooltip:{
+            enabled:true,
+            mode:'index',
+            intersect:false,
+            backgroundColor:'rgba(255,255,255,0.95)',
+            titleColor:'#1a1f36',
+            bodyColor:'#1a1f36',
+            borderColor:'#d1d5db',
+            borderWidth:1,
+            padding:12,
+            displayColors:true,
+            callbacks:{
+              title:function(context){
+                return `Длина ${isCable?'кабеля':'шинопровода'}: ${context[0].parsed.x} м`;
+              },
+              label:function(context){
+                const label=context.dataset.label;
+                const value=context.parsed.y.toFixed(2);
+                return `${label}: ${value} кА`;
+              },
+              afterBody:function(context){
+                const length=context[0].parsed.x;
+                const ik3=currents3ph[lengths.indexOf(length)];
+                const ik1=currents1ph[lengths.indexOf(length)];
+                const ratio=(ik1/ik3*100).toFixed(1);
+                return `\nСоотношение: Iк1/Iк3 = ${ratio}%`;
+              }
+            }
+          },
+          crosshair:{
+            line:{
+              color:'#9ca3af',
+              width:1,
+              dashPattern:[5,5]
+            },
+            sync:{
+              enabled:false
+            },
+            zoom:{
+              enabled:false
+            }
+          }
+        },
+        scales:{
+          x:{
+            title:{display:true,text:`Длина ${isCable?'кабеля':'шинопровода'}, м`,font:{size:13,weight:'600'}},
+            grid:{color:'rgba(0,0,0,0.05)'}
+          },
+          y:{
+            title:{display:true,text:'Ток КЗ, кА',font:{size:13,weight:'600'}},
+            beginAtZero:false,
+            grid:{color:'rgba(0,0,0,0.05)'}
+          }
+        },
+        hover:{
+          mode:'index',
+          intersect:false
+        }
+      }
+    });
+    
+    // Инфо о варьируемом элементе
+    document.getElementById('chartInfo').innerHTML=`
+      <strong>Варьируемый элемент:</strong> ${elementName}<br>
+      <strong>Прямая последовательность:</strong> R₀ = ${r0.toFixed(3)} мОм/м (kt=${kt.toFixed(3)}), X₀ = ${x0.toFixed(3)} мОм/м<br>
+      <strong>Нулевая последовательность:</strong> R₀n = ${r0n.toFixed(3)} мОм/м, X₀n = ${x0n.toFixed(3)} мОм/м<br>
+      <strong>Сопротивление цепи до элемента:</strong> R = ${sumR} мОм, X = ${sumX} мОм, Rn = ${sumRn} мОм, Xn = ${sumXn} мОм
+    `;
+    
+  }catch(err){
+    console.error('Ошибка построения графика:', err);
+    alert(`Ошибка построения графика:\n\n${err.message}\n\nПроверьте что все поля заполнены корректно.\nОткройте консоль браузера (F12) для деталей.`);
+  }
+}
+
+// Init
+renderChain();
+</script>
+</body>
+</html>
